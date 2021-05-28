@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="DVD--PHP运行时漏洞挖掘系统(说明文档)"/><link rel="alternate" href="/500-Team.github.io/default" title="500's Blog" ><link rel="shortcut icon" type="image/x-icon" href="/500-Team.github.io/favicon.ico?v=2.11.0" />
+<link rel="canonical" href="https://github.com/500-Team.github.io/2020/06/13/DVD-PHP运行时漏洞挖掘系统/"/>
+
+<link rel="stylesheet" type="text/css" href="/500-Team.github.io/lib/fancybox/jquery.fancybox.css" />
+<link rel="stylesheet" type="text/css" href="/500-Team.github.io/css/style.css?v=2.11.0" />
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":false};
+</script>
+
+    <title>DVD--PHP运行时漏洞挖掘系统(说明文档) - 500's Blog</title>
+  <meta name="generator" content="Hexo 5.4.0"></head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/500-Team.github.io/." class="logo">500's Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/500-Team.github.io/">
+        <li class="mobile-menu-item">Home
+          </li>
+      </a><a href="/500-Team.github.io/tags/">
+        <li class="mobile-menu-item">Tags
+          </li>
+      </a><a href="/500-Team.github.io/about/">
+        <li class="mobile-menu-item">About
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/500-Team.github.io/." class="logo">500's Blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/500-Team.github.io/">
+            Home
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/500-Team.github.io/tags/">
+            Tags
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/500-Team.github.io/about/">
+            About
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">DVD--PHP运行时漏洞挖掘系统(说明文档)
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2020-06-13
+        </span></div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">Welcome to DVD 👋</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text">一个功能强大的 PHP 运行时漏洞挖掘系统</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%9C%A8-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-text">✨  环境搭建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%9B%A0-%E6%A3%80%E6%B5%8B%E8%83%BD%E5%8A%9B"><span class="toc-text">🛠 检测能力</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%9A%A1%EF%B8%8F-%E6%A3%80%E6%B5%8B%E4%BD%BF%E7%94%A8"><span class="toc-text">⚡️ 检测使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%F0%9F%93%9D-%E5%85%B6%E4%BB%96"><span class="toc-text">📝 其他</span></a></li></ol></li></ol>
+    </div>
+  </div><div class="post-content"><h1 align="center">Welcome to DVD 👋</h1>  
+
+
+<h3 align="center">一个功能强大的 PHP 运行时漏洞挖掘系统</h3>  
+<div align="center">
+    <img alt="releases" src="https://img.shields.io/badge/releases-v1.0.0-blue.svg?style=flat-square&longCache=true">
+    <img alt="target" src="https://img.shields.io/badge/target-PHP__VERSION ≥ 7 -green">
+    <img alt="update" src="https://img.shields.io/badge/update-June-blue">
+    <img alt="license" src="https://img.shields.io/badge/license-GUN-green">
+</div>
+ 
+<h2 id="✨-环境搭建"><a href="#✨-环境搭建" class="headerlink" title="✨  环境搭建"></a>✨  环境搭建</h2><p><strong>在使用之前，请务必阅读并同意 <a href="https://github.com/59lx/dvd/blob/master/LICENSE">License</a> 文件中的条款，否则请勿安装使用本工具。</strong></p>
+<ol>
+<li><p>首先需要编译 <code>trace</code> 扩展，进入作品代码的<code> phpext</code> 目录，将测试目标机器中的 PHP 配置文件 <code>php.ini</code> 的绝对路径作为运行参数，运行该目录下的 <code>setup.py</code>，此命令将 <code>trace</code> 扩展劫持的函数与提前包含的 <code>entrance.php</code> 等配置信息导入到目标配置文件当。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python setup.py [php.ini 文件的绝对路径]</span><br></pre></td></tr></table></figure></li>
+<li><p>安装自动化测试需要的第三库，<code>webdriver</code> 等驱动。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install selenium</span><br></pre></td></tr></table></figure>
+
+<p><code>webdriver</code> 的下载见 <code>autotest</code> 目录的 <code>README.md</code> 文件。</p>
+<blockquote>
+<p>使用者可以根据常用浏览器下载不同类型的 webdriver</p>
+</blockquote>
+</li>
+<li><p>进入到作品 <code>front</code> 目录，使用作品提供的已编译的 php 启动漏洞报告平台。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">../php -S localhost:[任意空闲端口] ./public/router.php</span><br></pre></td></tr></table></figure></li>
+<li><p>修改模糊测试服务端的地址。将作品中 <code>fuzzer</code> 目录中的 <code>Server.php</code> 移动到本地 web 目录，然后根据本地访问 web 目录的地址进行配置，修改 <code>config</code> 目录中的 <code>DVD_FUZZER_DSN</code> 项，fuzzer 默认通信用户名，密码为 admin 和 password，可以根据需要进行修改。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">define(<span class="string">&#x27;DVD_FUZZER_DSN&#x27;</span>,<span class="string">&#x27;http://admin:password@127.0.0.1/Server.php&#x27;</span>);</span><br></pre></td></tr></table></figure></li>
+<li><p>重启一下 apache 服务器，不同运行平台的命令不同，下面给出 Mac 下的重启命令。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apachectl -k restart</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="🛠-检测能力"><a href="#🛠-检测能力" class="headerlink" title="🛠 检测能力"></a>🛠 检测能力</h2><ul>
+<li>XSS漏洞检测</li>
+</ul>
+<p>利用语义分析的方式检测XSS漏洞</p>
+<ul>
+<li>SQL 注入检测</li>
+</ul>
+<p>支持各种类型的 sql 注入</p>
+<ul>
+<li>命令/代码注入检测</li>
+</ul>
+<p>支持 shell 命令注入、PHP 代码执行。</p>
+<ul>
+<li><p>XML 实体注入检测</p>
+</li>
+<li><p>文件上传检测 </p>
+</li>
+</ul>
+<p>集成了单独的 UFU 漏洞检测模块</p>
+<ul>
+<li><p>ssrf 检测</p>
+</li>
+<li><p>重定向漏洞检测 </p>
+</li>
+<li><p>反序列化漏洞检测</p>
+</li>
+<li><p>多种文件类漏洞检测</p>
+</li>
+</ul>
+<p>文件读取，文件写入，文件包含，文件删除等漏洞都具有很好的支持。</p>
+<ul>
+<li>动态特性导致的代码执行漏洞检测</li>
+</ul>
+<p>Hook 底层 opcode，具有捕捉动态特性漏洞的能力。</p>
+<h2 id="⚡️-检测使用"><a href="#⚡️-检测使用" class="headerlink" title="⚡️ 检测使用"></a>⚡️ 检测使用</h2><p>直接点击测试功能点，或者使用作品提供的自动化测试组件进行针对性的自动化测试代码的编写, 集成代码后运行 <code>main</code> 目录下的 <code>run.py</code>。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python run.py</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="📝-其他"><a href="#📝-其他" class="headerlink" title="📝 其他"></a>📝 其他</h2><p>如有问题可以联系作者，联系方式 email : <a href="mailto:&#x63;&#108;&#105;&#99;&#x6b;&#49;&#55;&#57;&#x39;&#64;&#49;&#x36;&#51;&#x2e;&#99;&#111;&#x6d;">&#x63;&#108;&#105;&#99;&#x6b;&#49;&#55;&#57;&#x39;&#64;&#49;&#x36;&#51;&#x2e;&#99;&#111;&#x6d;</a> </p>
+<p>详细演示视频地址：<a target="_blank" rel="noopener" href="https://blog.c1ick.xyz/2020/06/13/DVD-PHP%E8%BF%90%E8%A1%8C%E6%97%B6%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E7%B3%BB%E7%BB%9F-%E6%BC%94%E7%A4%BA%E8%A7%86%E9%A2%91/">点击进入演示视频</a></p>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>Author: </span>
+      <a href="https://github.com/500-Team.github.io">500</a>
+    </p>
+    <p class="copyright-item">
+      <span>Link: </span>
+      <a href="https://github.com/500-Team.github.io/2020/06/13/DVD-PHP%E8%BF%90%E8%A1%8C%E6%97%B6%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E7%B3%BB%E7%BB%9F/">https://github.com/500-Team.github.io/2020/06/13/DVD-PHP%E8%BF%90%E8%A1%8C%E6%97%B6%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E7%B3%BB%E7%BB%9F/</a>
+    </p>
+    <p class="copyright-item">
+      <span>License: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        
+        <nav class="post-nav"><a class="prev" href="/500-Team.github.io/2020/06/13/DVD-PHP%E8%BF%90%E8%A1%8C%E6%97%B6%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E7%B3%BB%E7%BB%9F-%E6%BC%94%E7%A4%BA%E8%A7%86%E9%A2%91/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">DVD--PHP运行时漏洞挖掘系统(演示视频)</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"></div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://github.com/500-Team" class="iconfont icon-github" title="github"></a>
+        <a href="/500-Team.github.io/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2021<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">500</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript" src="/500-Team.github.io/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/500-Team.github.io/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/500-Team.github.io/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/500-Team.github.io/js/src/even.js?v=2.11.0"></script>
+</body>
+</html>
