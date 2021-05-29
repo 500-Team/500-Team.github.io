@@ -21,7 +21,7 @@ fi
 
 cd .deploy_git/ \
 	&& git pull origin gh-pages \
-	&& cp -r ./public/* ./ \
+	&& cp -r ../public/* ./ \
 	&& git add . \
 	&& git commit -m "Site update : `date +%F` by `whoami`." \
 	&& git push origin gh-pages
