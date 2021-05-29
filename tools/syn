@@ -1,21 +1,21 @@
-#!/bin/bash
+#!/bin/sh
 
 if [ ! -d "./public" ]; then
-	echo "[error] no public content. Consider use \"hexo g\" to create."
+	echo "\033[41;30m[Error]\033[0m no public content. Consider use \"hexo g\" to create."
 	exit 0
 fi
 
-echo "[updating] (master) pull lastest update and push..."
+echo "\033[42;30m[Updating]\033[0m (master) pull lastest update and push..."
 git pull origin master \
 	&& git add . \
 	&& git commit -m "`date +%F` by `whoami`." \
 	&& git push origin master
 
 
-echo "[gh-pages] pull lastest update and push..."
+echo "\033[42;30m[gh-pages]\033[0m pull lastest update and push..."
 if [ ! -d "./.deploy_git" ]; then
-	echo "[warning] no .deploy_git content."
-	echo "cloning gp-pages branch to .deplpy_git."
+	echo "\033[43;30m[Warning]\033[0m no .deploy_git content."
+	echo "\033[42;30m[Cloning]\033[0m download gp-pages branch to .deplpy_git."
 	git clone -b gh-pages https://github.com/500-Team/500-Team.github.io.git .deploy_git
 fi
 
@@ -24,7 +24,6 @@ cd .deploy_git/ \
 	&& cp -r ../public/* ./ \
 	&& git add . \
 	&& git commit -m "Site update : `date +%F` by `whoami`." \
-	&& git push origin gh-pages
-
-
+	&& git push origin gh-pages \
+	&& echo "\033[46;30m[Done]\033[0m already to publish."
 

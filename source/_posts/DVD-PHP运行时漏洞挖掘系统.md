@@ -15,7 +15,7 @@ tags:
     <img alt="license" src="https://img.shields.io/badge/license-GUN-green">
 </div>
 {% endraw %} 
-  
+
 ## ✨  环境搭建
 
 **在使用之前，请务必阅读并同意 [License](https://github.com/59lx/dvd/blob/master/LICENSE) 文件中的条款，否则请勿安装使用本工具。**
@@ -53,7 +53,7 @@ tags:
    ```bash
    sudo apachectl -k restart
    ```
-  
+
 ## 🛠 检测能力
 
 - XSS漏洞检测
@@ -76,25 +76,25 @@ tags:
 
 - XML 实体注入检测
 
-  
 
-- 文件上传检测 
+
+- 文件上传检测
 
 集成了单独的 UFU 漏洞检测模块
 
-  
+
 
 - ssrf 检测
 
-  
 
-- 重定向漏洞检测 
 
-  
+- 重定向漏洞检测
+
+
 
 - 反序列化漏洞检测
 
-  
+
 
 - 多种文件类漏洞检测
 
@@ -107,7 +107,7 @@ tags:
 Hook 底层 opcode，具有捕捉动态特性漏洞的能力。
 
 
-  
+
 ## ⚡️ 检测使用
 
 直接点击测试功能点，或者使用作品提供的自动化测试组件进行针对性的自动化测试代码的编写, 集成代码后运行 `main` 目录下的 `run.py`。
@@ -117,7 +117,7 @@ python run.py
 ```
 
 
-  
+
 ## 📝 其他
 
 如有问题可以联系作者，联系方式 email : click1799@163.com 
