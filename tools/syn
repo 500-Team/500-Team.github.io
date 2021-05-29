@@ -6,9 +6,9 @@ if [ ! -d "./public" ]; then
 fi
 
 echo "[updating] (master) pull lastest update and push..."
-git pull origin master \ 
-	&& git add . \ 
-	&& git commit -m "`date +%F` by `whoami`." \ 
+git pull origin master \
+	&& git add . \
+	&& git commit -m "`date +%F` by `whoami`." \
 	&& git push origin master
 
 
@@ -19,11 +19,11 @@ if [ ! -d "./.deplpy_git" ]; then
 	git clone -b gh-pages https://github.com/500-Team/500-Team.github.io.git .deploy_git
 fi
 
-cd .deplpy_git/ \ 
-	&& git pull origin gh-pages \ 
-	&& cp -r ./public/* ./ \ 
-	&& git add . \ 
-	&& git commit -m "Site update : `date +%F` by `whoami`." \ 
+cd .deplpy_git/ \
+	&& git pull origin gh-pages \
+	&& cp -r ./public/* ./ \
+	&& git add . \
+	&& git commit -m "Site update : `date +%F` by `whoami`." \
 	&& git push origin gh-pages
 
 
