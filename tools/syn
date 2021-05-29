@@ -19,7 +19,7 @@ if [ ! -d "./.deplpy_git" ]; then
 	git clone -b gh-pages https://github.com/500-Team/500-Team.github.io.git .deploy_git
 fi
 
-cd .deplpy_git/ \
+cd .deploy_git/ \
 	&& git pull origin gh-pages \
 	&& cp -r ./public/* ./ \
 	&& git add . \
