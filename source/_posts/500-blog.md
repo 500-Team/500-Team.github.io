@@ -53,6 +53,8 @@ hexo g
 ./tools/syn 
 ```
 
+完成后访问 500team.cn 即可看到文章，由于 CDN 的缓存机制，可能会有一分钟内的延迟。
+
 ## 删除文章 (尽可能不用)
 
 删除文章时因为无法确定是未同步还是删除，所以需要删除文章时需要在删除 master 分支和 .deploy_git 文件夹(gh-pages分支)内容后，手动 `pull`、`add`、`commit`、`push`，需要注意在 `pull` 和 `push` 时分别指定对应分支。
