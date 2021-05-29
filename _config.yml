@@ -102,6 +102,6 @@ theme: even
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
-  type: git
-  repository: https://github.com/500-Team/500-Team.github.io
-  branch: gh-pages
+  type: #git
+  repository: #https://github.com/500-Team/500-Team.github.io
+  branch: #gh-pages
