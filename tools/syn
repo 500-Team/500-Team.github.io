@@ -1,15 +1,30 @@
 #!/bin/bash
 
-echo "pull lastest update..." \
-&& git pull origin master \
-&& echo "copy ./public files to .deploy_git..." \
-&& cp -r ./public/ .deploy_git \
-&& echo "push local content to remote..." \
-&& git add .deploy_git/ \
-&& git add . \
-&& git commit -m "`date +%F`" \
-&& git push origin master \
-&& echo "replace .deploy_git/.git...." \
-&& cp .deploy_git/git .deploy_git/.git
+if [ ! -d "./public" ]; then
+	echo "[error] no public content. Consider use \"hexo g\" to create."
+	exit 0
+fi
+
+echo "[updating] (master) pull lastest update and push..."
+git pull origin master \ 
+	&& git add . \ 
+	&& git commit -m "`date +%F` by `whoami`." \ 
+	&& git push origin master
+
+
+echo "[gh-pages] pull lastest update and push..."
+if [ ! -d "./.deplpy_git" ]; then
+	echo "[warning] no .deploy_git content."
+	echo "cloning gp-pages branch to .deplpy_git."
+	git clone -b gh-pages https://github.com/500-Team/500-Team.github.io.git .deploy_git
+fi
+
+cd .deplpy_git/ \ 
+	&& git pull origin gh-pages \ 
+	&& cp -r ./public/* ./ \ 
+	&& git add . \ 
+	&& git commit -m "Site update : `date +%F` by `whoami`." \ 
+	&& git push origin gh-pages
+
 
 
