@@ -1,0 +1,10 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+	ignorecase = true
+	precomposeunicode = true
+[branch "master"]
+	remote = https://github.com/500-Team/500-Team.github.io
+	merge = refs/heads/gh-pages
