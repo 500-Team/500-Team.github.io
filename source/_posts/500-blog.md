@@ -53,3 +53,23 @@ hexo g
 ./tools/syn 
 ```
 
+## 删除文章 (尽可能不用)
+
+删除文章时因为无法确定是未同步还是删除，所以需要删除文章时需要在删除 master 分支和 .deploy_git 文件夹(gh-pages分支)内容后，手动 `pull`、`add`、`commit`、`push`，需要注意在 `pull` 和 `push` 时分别指定对应分支。
+
+```shell
+首先删除 blog/source 下和 blog/.deploy_git 下的内容
+
+# master branch
+git pull origin master
+git add .
+git commit -m "delete ..."
+git push origin master
+
+# gh-pages branch
+git pull origin gh-pages
+git add .
+git commit -m "delete ..."
+git push origin gh-pages
+```
+
