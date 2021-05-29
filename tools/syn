@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "pull lastest update...\n" \
+echo "pull lastest update..." \
 && git pull origin master \
 && echo "push local content to remote..." \
 && git add .deploy_git/ \
