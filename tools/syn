@@ -3,13 +3,13 @@
 echo "pull lastest update..." \
 && git pull origin master \
 && echo "copy ./public files to .deploy_git..." \
-&& cp -r ./public/* .deploy_git/* \
+&& cp -r ./public/ .deploy_git \
 && echo "push local content to remote..." \
 && git add .deploy_git/ \
 && git add . \
 && git commit -m "`date +%F`" \
 && git push origin master \
 && echo "replace .deploy_git/.git...." \
-&& mv .deploy_git/git .deploy_git/.git
+&& cp .deploy_git/git .deploy_git/.git
 
 
