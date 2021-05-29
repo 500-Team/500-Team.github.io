@@ -115,6 +115,7 @@
     <img alt="license" src="https://img.shields.io/badge/license-GUN-green">
 </div>
  
+
 <h2 id="✨-环境搭建"><a href="#✨-环境搭建" class="headerlink" title="✨  环境搭建"></a>✨  环境搭建</h2><p><strong>在使用之前，请务必阅读并同意 <a href="https://github.com/59lx/dvd/blob/master/LICENSE">License</a> 文件中的条款，否则请勿安装使用本工具。</strong></p>
 <ol>
 <li><p>首先需要编译 <code>trace</code> 扩展，进入作品代码的<code> phpext</code> 目录，将测试目标机器中的 PHP 配置文件 <code>php.ini</code> 的绝对路径作为运行参数，运行该目录下的 <code>setup.py</code>，此命令将 <code>trace</code> 扩展劫持的函数与提前包含的 <code>entrance.php</code> 等配置信息导入到目标配置文件当。</p>
@@ -147,21 +148,23 @@
 </ul>
 <p>支持 shell 命令注入、PHP 代码执行。</p>
 <ul>
-<li><p>XML 实体注入检测</p>
-</li>
-<li><p>文件上传检测 </p>
-</li>
+<li>XML 实体注入检测</li>
+</ul>
+<ul>
+<li>文件上传检测</li>
 </ul>
 <p>集成了单独的 UFU 漏洞检测模块</p>
 <ul>
-<li><p>ssrf 检测</p>
-</li>
-<li><p>重定向漏洞检测 </p>
-</li>
-<li><p>反序列化漏洞检测</p>
-</li>
-<li><p>多种文件类漏洞检测</p>
-</li>
+<li>ssrf 检测</li>
+</ul>
+<ul>
+<li>重定向漏洞检测</li>
+</ul>
+<ul>
+<li>反序列化漏洞检测</li>
+</ul>
+<ul>
+<li>多种文件类漏洞检测</li>
 </ul>
 <p>文件读取，文件写入，文件包含，文件删除等漏洞都具有很好的支持。</p>
 <ul>
@@ -172,7 +175,8 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python run.py</span><br></pre></td></tr></table></figure>
 
 
-<h2 id="📝-其他"><a href="#📝-其他" class="headerlink" title="📝 其他"></a>📝 其他</h2><p>如有问题可以联系作者，联系方式 email : <a href="mailto:&#x63;&#108;&#x69;&#x63;&#x6b;&#x31;&#55;&#x39;&#x39;&#64;&#x31;&#54;&#x33;&#x2e;&#99;&#x6f;&#109;">&#x63;&#108;&#x69;&#x63;&#x6b;&#x31;&#55;&#x39;&#x39;&#64;&#x31;&#54;&#x33;&#x2e;&#99;&#x6f;&#109;</a> </p>
+
+<h2 id="📝-其他"><a href="#📝-其他" class="headerlink" title="📝 其他"></a>📝 其他</h2><p>如有问题可以联系作者，联系方式 email : <a href="mailto:&#x63;&#x6c;&#x69;&#99;&#107;&#x31;&#x37;&#x39;&#x39;&#64;&#49;&#54;&#51;&#46;&#x63;&#x6f;&#x6d;">&#x63;&#x6c;&#x69;&#99;&#107;&#x31;&#x37;&#x39;&#x39;&#64;&#49;&#54;&#51;&#46;&#x63;&#x6f;&#x6d;</a> </p>
 <p>详细演示视频地址：<a target="_blank" rel="noopener" href="https://blog.c1ick.xyz/2020/06/13/DVD-PHP%E8%BF%90%E8%A1%8C%E6%97%B6%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E7%B3%BB%E7%BB%9F-%E6%BC%94%E7%A4%BA%E8%A7%86%E9%A2%91/">点击进入演示视频</a></p>
 
       </div>

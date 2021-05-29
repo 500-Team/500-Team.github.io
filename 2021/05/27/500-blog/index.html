@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
-<meta name="description" content="500 blog"/><link rel="alternate" href="/500-Team.github.io/default" title="500's Blog" ><link rel="shortcut icon" type="image/x-icon" href="/500-Team.github.io/favicon.ico?v=2.11.0" />
+<meta name="description" content="500 blog"/><meta name="keywords" content="blog, 500's Blog" /><link rel="alternate" href="/500-Team.github.io/default" title="500's Blog" ><link rel="shortcut icon" type="image/x-icon" href="/500-Team.github.io/favicon.ico?v=2.11.0" />
 <link rel="canonical" href="https://github.com/500-Team.github.io/2021/05/27/500-blog/"/>
 
 <link rel="stylesheet" type="text/css" href="/500-Team.github.io/lib/fancybox/jquery.fancybox.css" />
@@ -96,27 +96,39 @@
       <div class="post-meta">
         <span class="post-time">
           2021-05-27
-        </span></div>
+        </span><span class="post-author">
+          / click
+        </span>
+        </div>
     </header>
 
     <div class="post-toc" id="post-toc">
     <h2 class="post-toc-title">Contents</h2>
     <div class="post-toc-content">
-      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2"><span class="toc-text">部署</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E"><span class="toc-text">使用说明</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA"><span class="toc-text">博客搭建</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B0%E6%B3%A8%E5%86%8C%E4%BA%86"><span class="toc-text">新注册了</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%90%AD%E5%BB%BA%E8%AF%B4%E6%98%8E"><span class="toc-text">搭建说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TODO"><span class="toc-text">TODO</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E"><span class="toc-text">使用说明</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2"><span class="toc-text">部署</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%91%E5%B8%83%E6%96%87%E7%AB%A0"><span class="toc-text">发布文章</span></a></li></ol></li></ol>
     </div>
-  </div><div class="post-content"><h1 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h1><p>500 团队博客现在使用 github page + hexo 部署，主题 even.</p>
-<p>新注册了：</p>
-<ul>
+  </div><div class="post-content"><h1 id="博客搭建"><a href="#博客搭建" class="headerlink" title="博客搭建"></a>博客搭建</h1><p>500 团队博客现在使用 github page + hexo 部署，主题 even.</p>
+<h2 id="新注册了"><a href="#新注册了" class="headerlink" title="新注册了"></a>新注册了</h2><ul>
 <li>团队 github 账号(<code>500-Team</code>)</li>
-<li>团队博客域名(<code>500team.cn</code>) 正在审核中</li>
+<li>团队博客域名(<code>500team.cn</code>)</li>
 <li>cloudflare CDN 账号</li>
 </ul>
-<p>TODO:</p>
-<ul>
-<li>域名审核完成后将 500team.cn 解析向博客地址</li>
-<li>使用 cloudfare CDN 加速国内访问博客的速度</li>
+<h2 id="搭建说明"><a href="#搭建说明" class="headerlink" title="搭建说明"></a>搭建说明</h2><ul>
+<li>博客对应仓库为 <code>500-Team.github.io</code>，绑定域名为 <code>500team.cn</code> ，使用 cloudflare CDN 实现博客在国内的加速访问，(主要为了加速其中图片的访问)。</li>
+<li> <code>500-Team.github.io</code> 共两个分支，分别为 <code>master</code> 和 <code>gh-pages</code>。在每次提交文章时，<code>tools/syn</code> 脚本会将两个分支均进行拉取了推送，以解决多人协同问题。</li>
+<li><code>master</code> 分支为 hexo 文章源文件分支，<code>gh-pages</code> 分支为文章发布内容分支。</li>
+<li><code>500team.cn</code> 部署了 https，使用 cloudflare 自签名证书。</li>
+</ul>
+<p>考虑到博客维护的问题，本博客的所有功能都托管在第三方(Github、cloudflare等)，仅域名需要每年续费。</p>
+<h2 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a>TODO</h2><ul>
+<li>优化向文章中插入图片的方法</li>
+<li>文章评论功能</li>
 </ul>
 <h1 id="使用说明"><a href="#使用说明" class="headerlink" title="使用说明"></a>使用说明</h1><p>博客关联在团队 github 仓库下，成员 github 账号将被邀请到团队博客仓库的协作者中，以获得博客修改权限。</p>
+<h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 克隆 master 分支到本地，重命名为 blog</span> </span><br><span class="line">git clone -b master https://github.com/500-Team/500-Team.github.io.git blog</span><br><span class="line"><span class="meta">#</span><span class="bash"> npm 安装组件</span></span><br><span class="line">npm install</span><br><span class="line"><span class="meta">#</span><span class="bash"> 测试部署效果</span></span><br><span class="line">hexo s</span><br></pre></td></tr></table></figure>
+
+<h2 id="发布文章"><a href="#发布文章" class="headerlink" title="发布文章"></a>发布文章</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 新建文章文件</span></span><br><span class="line">hexo new &quot;文章名&quot;</span><br><span class="line"><span class="meta">#</span><span class="bash"> 编辑文章文件，由于协同问题尽量不要修改其他人文章，在两人同时修改同一份文件的情况下会出现冲突</span></span><br><span class="line">vim ./source/_post/文章名.md (或者使用 markdown 编辑器写)</span><br><span class="line"><span class="meta">#</span><span class="bash"> 生成文章发布内容 (可以生成前先用 hexo s 在本地预览)</span></span><br><span class="line">hexo g </span><br><span class="line"><span class="meta">#</span><span class="bash"> 同步提交 (!!!注意!!! 执行脚本时，工作目录处于blog根目录下，也就是包含<span class="built_in">source</span>、_config.yml等文件的位置)</span></span><br><span class="line">./tools/syn </span><br></pre></td></tr></table></figure>
+
 
       </div>
       <div class="post-copyright">
@@ -133,13 +145,11 @@
     </p>
   </div>
       <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/500-Team.github.io/tags/blog/">blog</a>
+            </div>
         
-        <nav class="post-nav"><a class="prev" href="/500-Team.github.io/2021/05/28/article1/">
-        <i class="iconfont icon-left"></i>
-        <span class="prev-text nav-default">article1</span>
-        <span class="prev-text nav-mobile">Prev</span>
-      </a>
-    <a class="next" href="/500-Team.github.io/2020/06/13/DVD-PHP%E8%BF%90%E8%A1%8C%E6%97%B6%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E7%B3%BB%E7%BB%9F-%E6%BC%94%E7%A4%BA%E8%A7%86%E9%A2%91/">
+        <nav class="post-nav"><a class="next" href="/500-Team.github.io/2020/06/13/DVD-PHP%E8%BF%90%E8%A1%8C%E6%97%B6%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98%E7%B3%BB%E7%BB%9F-%E6%BC%94%E7%A4%BA%E8%A7%86%E9%A2%91/">
         <span class="next-text nav-default">DVD--PHP运行时漏洞挖掘系统(演示视频)</span>
         <span class="prev-text nav-mobile">Next</span>
         <i class="iconfont icon-right"></i>
