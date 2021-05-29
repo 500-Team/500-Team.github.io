@@ -45,11 +45,14 @@ hexo s
 ```shell
 # 新建文章文件
 hexo new "文章名"
+
 # 编辑文章文件，由于协同问题尽量不要修改其他人文章，在两人同时修改同一份文件的情况下会出现冲突
 # 可以在 md 文件头部 tag: 下一行增加 author: xxx 来标注文章作者
 vim ./source/_post/文章名.md (或者使用 markdown 编辑器写)
+
 # 生成文章发布内容 (可以生成前先用 hexo s 在本地预览)
 hexo g 
+
 # 同步提交 (!!!注意!!! 执行脚本时，工作目录处于blog根目录下，也就是包含source、_config.yml等文件的位置)
 ./tools/syn 
 ```
