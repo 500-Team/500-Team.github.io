@@ -103,7 +103,7 @@ feed:
         limit: 0
         hub: 
         content: 
-        content_limit: 140
+        content_limit: 
         order_by: -date
         icon: icon.png
         autodiscovery: true
