@@ -50,6 +50,7 @@ vim ./source/_post/文章名.md (或者使用 markdown 编辑器写)
 hexo g 
 
 # 同步提交 (!!!注意!!! 执行脚本时，工作目录处于blog根目录下，也就是包含source、_config.yml等文件的位置)
+# 这里的 shell 环境最好有梯子，否则网络超时导致的中断会有一点点麻烦
 ./tools/syn 
 ```
 
