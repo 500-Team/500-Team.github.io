@@ -13,7 +13,7 @@ author: click
 + 团队博客域名(`500team.cn`)
 + cloudflare CDN 账号
 
-## 搭建说明
+# 搭建说明
 
 + 博客对应仓库为 `500-Team.github.io`，绑定域名为 `500team.cn` ，使用 cloudflare CDN 实现博客在国内的加速访问，(主要为了加速其中图片的访问)。
 +  `500-Team.github.io` 共两个分支，分别为 `master` 和 `gh-pages`。在每次提交文章时，`tools/syn` 脚本会将两个分支均进行拉取了推送，以解决多人协同问题。
@@ -22,11 +22,8 @@ author: click
 
 考虑到博客维护的问题，本博客的所有功能都托管在第三方(Github、cloudflare等)，仅域名需要每年续费。
 
-## TODO
-+ 优化向文章中插入图片的方法
-+ 文章评论功能
-
 # 使用说明
+
 博客关联在团队 github 仓库下，成员 github 账号将被邀请到团队博客仓库的协作者中，以获得博客修改权限。
 
 ## 部署
@@ -79,3 +76,11 @@ git commit -m "delete ..."
 git push origin gh-pages
 ```
 
+## RSS 订阅
+
+订阅链接为 `https://500team.cn/atom.xml`，类型 `atom`，mac 推荐的 rss 阅读器 `Reeder`。
+
+# TODO
+
++ 优化向文章中插入图片的方法
++ 文章评论功能
