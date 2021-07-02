@@ -102,8 +102,8 @@ feed:
         path: atom.xml
         limit: 0
         hub: 
-        content: 
-        content_limit: 
+        content:  
+        content_limit: 140
         order_by: -date
         icon: icon.png
         autodiscovery: true
