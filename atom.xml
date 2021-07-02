@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>500&#39;s Blog</title>
+  <icon>https://500team.cn/icon.png</icon>
+  
+  <link href="https://500team.cn/atom.xml" rel="self"/>
+  
+  <link href="https://500team.cn/"/>
+  <updated>2021-05-29T20:34:34.273Z</updated>
+  <id>https://500team.cn/</id>
+  
+  <author>
+    <name>500</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>500 blog</title>
+    <link href="https://500team.cn/2021/05/27/500-blog/"/>
+    <id>https://500team.cn/2021/05/27/500-blog/</id>
+    <published>2021-05-27T09:20:15.000Z</published>
+    <updated>2021-05-29T20:34:34.273Z</updated>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;博客搭建&quot;&gt;&lt;a href=&quot;#博客搭建&quot; class=&quot;headerlink&quot; title=&quot;博客搭建&quot;&gt;&lt;/a&gt;博客搭建&lt;/h1&gt;&lt;p&gt;500 团队博客现在使用 github page + hexo 部署，主题 even.&lt;/p&gt;
+&lt;h2 id=&quot;新注册了&quot;&gt;</summary>
+      
+    
+    
+    
+    
+    <category term="blog" scheme="https://500team.cn/tags/blog/"/>
+    
+  </entry>
+  
+</feed>
