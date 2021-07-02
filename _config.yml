@@ -13,7 +13,7 @@ timezone: ''
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
-url: https://github.com/500-Team.github.io
+url: https://500team.cn
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 pretty_urls:
@@ -96,6 +96,18 @@ ignore:
 
 # Extensions
 ## Plugins: https://hexo.io/plugins/
+feed:
+        enable: true
+        type: atom
+        path: atom.xml
+        limit: 0
+        hub: 
+        content: 
+        content_limit: 140
+        order_by: -date
+        icon: icon.png
+        autodiscovery: true
+        template: 
 ## Themes: https://hexo.io/themes/
 theme: even
 
