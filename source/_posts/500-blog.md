@@ -11,7 +11,8 @@ author: click
 ### 新注册了
 + 团队 github 账号(`500-Team`)
 + 团队博客域名(`500team.cn`)
-+ cloudflare CDN 账号
++ cloudflare CDN 账号(`c1ick****@gmail.com`)
++ disqus 评论账号(`c1ick****@gmail.com`)
 
 ### 相关配置
 + 博客对应仓库为 `500-Team.github.io`，绑定域名为 `500team.cn` ，使用 cloudflare CDN 实现博客在国内的加速访问，(主要为了加速其中图片的访问)。
@@ -80,7 +81,10 @@ git push origin gh-pages
 
 订阅链接为 `https://500team.cn/atom.xml`，类型 `atom`，mac 推荐的 rss 阅读器 `Reeder`。
 
+### 评论功能
+
+使用了 `disqus` 评论服务，可以使用自定义访客 id 进行评论，也可以在 `disqus` 中注册账号评论。
+
 ## TODO
 
 + 优化向文章中插入图片的方法
-+ 文章评论功能
