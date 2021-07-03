@@ -105,13 +105,14 @@
     <div class="post-toc" id="post-toc">
     <h2 class="post-toc-title">Contents</h2>
     <div class="post-toc-content">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%90%AD%E5%BB%BA%E8%AF%B4%E6%98%8E"><span class="toc-text">搭建说明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B0%E6%B3%A8%E5%86%8C%E4%BA%86"><span class="toc-text">新注册了</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%B8%E5%85%B3%E9%85%8D%E7%BD%AE"><span class="toc-text">相关配置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E"><span class="toc-text">使用说明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2"><span class="toc-text">部署</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%91%E5%B8%83%E6%96%87%E7%AB%A0"><span class="toc-text">发布文章</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E6%96%87%E7%AB%A0-%E5%B0%BD%E5%8F%AF%E8%83%BD%E4%B8%8D%E7%94%A8"><span class="toc-text">删除文章 (尽可能不用)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RSS-%E8%AE%A2%E9%98%85"><span class="toc-text">RSS 订阅</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TODO"><span class="toc-text">TODO</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%90%AD%E5%BB%BA%E8%AF%B4%E6%98%8E"><span class="toc-text">搭建说明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B0%E6%B3%A8%E5%86%8C%E4%BA%86"><span class="toc-text">新注册了</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%B8%E5%85%B3%E9%85%8D%E7%BD%AE"><span class="toc-text">相关配置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E"><span class="toc-text">使用说明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2"><span class="toc-text">部署</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%91%E5%B8%83%E6%96%87%E7%AB%A0"><span class="toc-text">发布文章</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E6%96%87%E7%AB%A0-%E5%B0%BD%E5%8F%AF%E8%83%BD%E4%B8%8D%E7%94%A8"><span class="toc-text">删除文章 (尽可能不用)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RSS-%E8%AE%A2%E9%98%85"><span class="toc-text">RSS 订阅</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%84%E8%AE%BA%E5%8A%9F%E8%83%BD"><span class="toc-text">评论功能</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TODO"><span class="toc-text">TODO</span></a></li></ol>
     </div>
   </div><div class="post-content"><h2 id="搭建说明"><a href="#搭建说明" class="headerlink" title="搭建说明"></a>搭建说明</h2><p>500 团队博客现在使用 github page + hexo 部署，主题 even.</p>
 <h3 id="新注册了"><a href="#新注册了" class="headerlink" title="新注册了"></a>新注册了</h3><ul>
 <li>团队 github 账号(<code>500-Team</code>)</li>
 <li>团队博客域名(<code>500team.cn</code>)</li>
-<li>cloudflare CDN 账号</li>
+<li>cloudflare CDN 账号(<code>c1ick****@gmail.com</code>)</li>
+<li>disqus 评论账号(<code>c1ick****@gmail.com</code>)</li>
 </ul>
 <h3 id="相关配置"><a href="#相关配置" class="headerlink" title="相关配置"></a>相关配置</h3><ul>
 <li>博客对应仓库为 <code>500-Team.github.io</code>，绑定域名为 <code>500team.cn</code> ，使用 cloudflare CDN 实现博客在国内的加速访问，(主要为了加速其中图片的访问)。</li>
@@ -130,9 +131,9 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">首先删除 blog/source 下和 blog/.deploy_git 下的内容</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> master branch</span></span><br><span class="line">git pull origin master</span><br><span class="line">git add .</span><br><span class="line">git commit -m &quot;delete ...&quot;</span><br><span class="line">git push origin master</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> gh-pages branch</span></span><br><span class="line">git pull origin gh-pages</span><br><span class="line">git add .</span><br><span class="line">git commit -m &quot;delete ...&quot;</span><br><span class="line">git push origin gh-pages</span><br></pre></td></tr></table></figure>
 
 <h3 id="RSS-订阅"><a href="#RSS-订阅" class="headerlink" title="RSS 订阅"></a>RSS 订阅</h3><p>订阅链接为 <code>https://500team.cn/atom.xml</code>，类型 <code>atom</code>，mac 推荐的 rss 阅读器 <code>Reeder</code>。</p>
+<h3 id="评论功能"><a href="#评论功能" class="headerlink" title="评论功能"></a>评论功能</h3><p>使用了 disqus 评论服务</p>
 <h2 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a>TODO</h2><ul>
 <li>优化向文章中插入图片的方法</li>
-<li>文章评论功能</li>
 </ul>
 
       </div>
@@ -155,7 +156,13 @@
             </div>
         
         <nav class="post-nav"></nav></footer>
-    </article></div><div class="comments" id="comments"></div></div>
+    </article></div><div class="comments" id="comments"><div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div></div>
       </main>
 
       <footer id="footer" class="footer"><div class="social-links"><a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
@@ -182,7 +189,21 @@
       <div class="back-to-top" id="back-to-top">
         <i class="iconfont icon-up"></i>
       </div>
-    </div><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+    </div><script type="text/javascript">
+    var disqus_config = function () {
+        this.page.url = 'https://500team.cn/2021/05/27/500-blog/';
+        this.page.identifier = '2021/05/27/500-blog/';
+        this.page.title = '500 blog';
+    };
+    (function() {
+    var d = document, s = d.createElement('script');
+
+    s.src = '//500team.disqus.com/embed.js';
+
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();  
+  </script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
   <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
   <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
   <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script>
