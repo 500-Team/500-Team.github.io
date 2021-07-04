@@ -1,6 +1,6 @@
 {%- if page.comments and not is_home() -%}
   <div class="comments" id="comments">
-    {%- if theme.disqus_shortname -%}
+    {%- if theme.disqus.shortname -%}
       <div id="disqus_thread">
         <noscript>
           Please enable JavaScript to view the

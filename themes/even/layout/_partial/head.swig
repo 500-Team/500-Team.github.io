@@ -47,3 +47,8 @@
 <script>
   window.config = {{ JSON.stringify(themeConfig) }};
 </script>
+
+{#- disqusjs -#}
+{%- if !is_home() and !is_archive() and !is_page() -%}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqusjs.css">
+

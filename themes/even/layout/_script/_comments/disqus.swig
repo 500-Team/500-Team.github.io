@@ -1,17 +1,15 @@
-{%- if theme.disqus_shortname -%}
-  <script type="text/javascript">
-    var disqus_config = function () {
-        this.page.url = '{{ page.permalink }}';
-        this.page.identifier = '{{ page.path }}';
-        this.page.title = '{{ page.title }}';
-    };
-    (function() {
-    var d = document, s = d.createElement('script');
-
-    s.src = '//{{theme.disqus_shortname}}.disqus.com/embed.js';
-
-    s.setAttribute('data-timestamp', +new Date());
-    (d.head || d.body).appendChild(s);
-    })();  
-  </script>
+{%- if theme.disqus.shortname -%}
+<script src="https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js"></script>
+<script type="text/javascript">
+  var dsqjs = new DisqusJS({
+      shortname: '{{ theme.disqus.shortname}}',
+      identifier: '{{ page.path }}',
+      url: '{{ page.permalink }}',
+      title: '{{ page.title }}',
+      api: '{{ theme.disqus.api }}',
+      apikey: '{{ theme.disqus.apikey }}',
+      admin: '{{ theme.disqus.admin }}',
+      adminLabel: '{{ theme.disqus.adminLable }}'
+  });
+</script>
 {%- endif -%}

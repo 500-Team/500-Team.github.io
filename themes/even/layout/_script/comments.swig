@@ -1,4 +1,4 @@
-{%- if !is_home() and !is_archive() -%}
+{%- if !is_home() and !is_archive() and !is_page() -%}
   {%- include "_comments/disqus.swig" -%}
   {%- include "_comments/changyan.swig" -%}
   {%- include "_comments/livere.swig" -%}

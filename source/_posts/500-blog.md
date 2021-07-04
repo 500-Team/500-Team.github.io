@@ -6,7 +6,7 @@ author: click
 ---
 ## 搭建说明
 
-500 团队博客现在使用 github page + hexo 部署，主题 even.
+500 团队博客现在使用 `github page` + `hexo` 部署，主题 `even`.
 
 ### 新注册了
 + 团队 github 账号(`500-Team`)
@@ -44,13 +44,13 @@ hexo s
 hexo new "文章名"
 
 # 编辑文章文件，由于协同问题尽量不要修改其他人文章，在两人同时修改同一份文件的情况下会出现冲突
-# 可以在 md 文件头部 tag: 下一行增加 author: xxx 来标注文章作者
+# 可以在 md 文件头部 tag: 下一行增加 author: xxx 来标注 文章作者
 vim ./source/_post/文章名.md (或者使用 markdown 编辑器写)
 
 # 生成文章发布内容 (可以生成前先用 hexo s 在本地预览)
 hexo g 
 
-# 同步提交 (!!!注意!!! 执行脚本时，工作目录处于blog根目录下，也就是包含source、_config.yml等文件的位置)
+# 同步提交，将两个分支的内容分别进行拉取和推送 (!!!注意!!! 执行脚本时，工作目录处于blog根目录下，也就是包含source、_config.yml等文件的位置)
 # 这里的 shell 环境最好有梯子，否则网络超时导致的中断会有一点点麻烦
 ./tools/syn 
 ```
@@ -79,11 +79,12 @@ git push origin gh-pages
 
 ### RSS 订阅
 
-订阅链接为 `https://500team.cn/atom.xml`，类型 `atom`，mac 推荐的 rss 阅读器 `Reeder`。
+订阅链接为 `https://500team.cn/atom.xml`，类型 `atom`，mac 推荐的 rss 阅读器 `Reeder`，ios 推荐 `Ego Reader`。
 
 ### 评论功能
 
 使用了 `disqus` 评论服务，可以使用自定义访客 id 进行评论，也可以在 `disqus` 中注册账号评论。
+使用了 `disqusJS` 来优化评论服务被墙的问题，`disqusJS` 可以在无法翻墙时使用 disqus api 展示已有评论，如需新增评论，仍需翻墙。
 
 ## TODO
 

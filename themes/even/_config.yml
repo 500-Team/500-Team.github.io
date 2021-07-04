@@ -89,8 +89,14 @@ google_analytics:
 google_verification:
 
 # Disqus
-disqus_shortname: 500team
-
+#disqus_shortname: 500team
+disqus:
+  enable: true
+  shortname: 500team
+  api: https://disqus.skk.moe/disqus/
+  apikey: ClrDj075UU1Z575IOeVGwbZgwt5k5XVEWj2wyvN8u0U81jg3ynJZF3FSBAMUmGRb
+  admin: 500team
+  adminLable: 
 #Changyan
 changyan:
   appid:
