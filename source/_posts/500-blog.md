@@ -30,8 +30,8 @@ author: click
 
 ```shell
 # 克隆 master 分支到本地，重命名为 blog 
-git clone -b master https://github.com/500-Team/500-Team.github.io.git blog
-# npm 安装组件
+git clone -b master https://github.com/500-Team/500-Team.github.io.git blog && cd blog
+# npm 安装组件(由于存在相关库停止维护，需要 npm 较早版本，测试 nodejs v14.16.0 可用)
 npm install
 # 测试部署效果
 hexo s

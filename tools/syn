@@ -6,24 +6,24 @@ if [ ! -d "./public" ]; then
 fi
 
 echo "\033[42;30m[Updating]\033[0m (master) pull lastest update and push..."
-git pull origin master \
-	&& git add . \
-	&& git commit -m "`date +%F` by `whoami`." \
-	&& git push origin master
+git pull origin master 
+git add .
+git commit -m "`date +%F` by `whoami`."
+git push origin master
 
 
 echo "\033[42;30m[gh-pages]\033[0m pull lastest update and push..."
 if [ ! -d "./.deploy_git" ]; then
 	echo "\033[43;30m[Warning]\033[0m no .deploy_git content."
 	echo "\033[42;30m[Cloning]\033[0m download gp-pages branch to .deplpy_git."
-	git clone -b gh-pages https://github.com/500-Team/500-Team.github.io.git .deploy_git
+	git clone -b gh-pages git@github.com:500-Team/500-Team.github.io.git .deploy_git
 fi
 
-cd .deploy_git/ \
-	&& git pull origin gh-pages \
-	&& cp -r ../public/* ./ \
-	&& git add . \
-	&& git commit -m "Site update : `date +%F` by `whoami`." \
-	&& git push origin gh-pages \
-	&& echo "\033[46;30m[Done]\033[0m already to publish."
+cd .deploy_git/
+git pull origin gh-pages
+cp -r ../public/* ./ 
+git add .
+git commit -m "Site update : `date +%F` by `whoami`." 
+git push origin gh-pages 
+echo "\033[46;30m[Done]\033[0m already to publish."
 
