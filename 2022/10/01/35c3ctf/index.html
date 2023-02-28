@@ -112,42 +112,48 @@
     </div>
   </div><div class="post-content"><h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><p>题目链接：<a target="_blank" rel="noopener" href="https://github.com/LevitatingLion/ctf-writeups/tree/master/35c3ctf/pwn_namespaces">https://github.com/LevitatingLion/ctf-writeups/tree/master/35c3ctf/pwn_namespaces</a><br>题目给出一个 Dockerfile 和一个 namespaces 二进制执行文件</p>
 <figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> tsuro/nsjail</span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> challenge/namespaces /home/user/chal</span></span><br><span class="line"><span class="comment">#这一句是模拟题解 flag 文件</span></span><br><span class="line"><span class="comment">#COPY tmpflag /flag </span></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> /bin/sh -c <span class="string">&quot;/usr/bin/setup_cgroups.sh &amp;&amp; cp /flag /tmp/flag &amp;&amp; chmod 400 /tmp/flag &amp;&amp; chown user /tmp/flag &amp;&amp; su user -c &#x27;/usr/bin/nsjail -Ml --port 1337 --chroot / -R /tmp/flag:/flag -T /tmp --proc_rw -U 0:1000:1 -U 1:100000:1 -G 0:1000:1 -G 1:100000:1 --keep_caps --cgroup_mem_max 209715200 --cgroup_pids_max 100 --cgroup_cpu_ms_per_sec 100 --rlimit_as max --rlimit_cpu max --rlimit_nofile max --rlimit_nproc max -- /usr/bin/stdbuf -i0 -o0 -e0 /usr/bin/maybe_pow.sh /home/user/chal&#x27;&quot;</span></span></span><br></pre></td></tr></table></figure>
+
 <h2 id="TL-DR"><a href="#TL-DR" class="headerlink" title="TL;DR"></a>TL;DR</h2><ul>
 <li>题目程序的 Run_elf() 功能没有加入 sandbox 的 net ns</li>
 <li>通过一个 unix socket 连接两个沙盒中进程，并通过其将一个沙盒的 root 目录文件描述符发送给另一个沙盒</li>
 <li>使用这个外界文件描述符逃逸 chroot</li>
-<li>在新的 sandbox 创建过程中，用一个指向 <code>/</code> 的符号连接替换将要 chroot 的目标目录，由此获得一个unchroot 的进程<strong>（TOCTOU）</strong></li>
+<li>在新的 sandbox 创建过程中，用一个指向<code>/</code> 的符号连接替换将要 chroot 的目标目录，由此获得一个unchroot 的进程<strong>（TOCTOU）</strong></li>
 <li>创建一个新的 ns 获得 capabilities</li>
-<li>使用 bind 挂载伪造一个 <code>/proc/$pid/ns</code> 目录，从而在一个新加入的进程降权前控制它 ???</li>
-<li>注入 shellcode 到上述新加入进程中，读取 <code>flag</code><h2 id="分析题目"><a href="#分析题目" class="headerlink" title="分析题目"></a>分析题目</h2>关注其进行了以下步骤：</li>
+<li>使用 bind 挂载伪造一个<code>/proc/$pid/ns</code> 目录，从而在一个新加入的进程降权前控制它 ???</li>
+<li>注入 shellcode 到上述新加入进程中，读取<code>flag</code></li>
 </ul>
+<h2 id="分析题目"><a href="#分析题目" class="headerlink" title="分析题目"></a>分析题目</h2><p>关注其进行了以下步骤：</p>
 <ol>
-<li>将题目中的 namespaces 文件拷贝到 /home/user/chal </li>
+<li>将题目中的 namespaces 文件拷贝到 /home/user/chal</li>
 <li>执行一段 shell 命令<ol>
 <li>设定 cgroups 限制（不重要）</li>
 <li>将镜像中的 /flag 拷贝到 /tmp/flag</li>
 <li>设置 /tmp/flag 权限 r–</li>
 <li>设置 /tmp/flag 属主为 user (id 为 1000)</li>
-<li>启动一个 nsjail 服务，监听 1337 端口来执行 maybe_pow.sh，具体参数解释如下<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">su user -c # 以 user 用户执行</span><br><span class="line">/usr/bin/nsjail </span><br><span class="line">    -Ml --port 1337 # 监听 1337 port</span><br><span class="line">    --chroot / # 没有切换根目录</span><br><span class="line">    -R /tmp/flag:/flag # 将 /tmp/flag 只读方式绑定挂载到 /flag</span><br><span class="line">    -T /tmp # 在 /tmp 处挂载一个 tmpfs</span><br><span class="line">    --proc_rw # 将 procfs 挂载为可读写模式</span><br><span class="line">    -U 0:1000:1 # 隔离环境内的 UID/GID 0和1 分别映射为环境外的 1000 和 100000</span><br><span class="line">    -U 1:100000:1 </span><br><span class="line">    -G 0:1000:1 </span><br><span class="line">    -G 1:100000:1 </span><br><span class="line">    --keep_caps # 保留所有 capablities</span><br><span class="line">    --cgroup_mem_max 209715200 </span><br><span class="line">    --cgroup_pids_max 100 </span><br><span class="line">    --cgroup_cpu_ms_per_sec 100 </span><br><span class="line">    --rlimit_as max </span><br><span class="line">    --rlimit_cpu max </span><br><span class="line">    --rlimit_nofile max </span><br><span class="line">    --rlimit_nproc max </span><br><span class="line">    -- /usr/bin/stdbuf -i0 -o0 -e0 /usr/bin/maybe_pow.sh /home/user/chal # 设置 input/output/error 输出无缓冲</span><br></pre></td></tr></table></figure>
-maybe_pow.sh 中的内容为: (这里的 pow… 均不重要，只关注 exec “$@”)，结合上面的参数也就是执行 /home/user/chal<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">if [ -f /pow ]; then # 如果 /pow 存在</span><br><span class="line">  POW=&quot;$(cat /pow)&quot;  # POW = /pow 的内容</span><br><span class="line">  if [ $&#123;POW&#125; != 0 ]; then # 如果 $POW 变量 != 0</span><br><span class="line">    if ! /usr/bin/pow.py ask &quot;$&#123;POW&#125;&quot;; then # 如果 &quot;pow.py ask $POW&quot; 执行返回值 == 0, 脚本退出</span><br><span class="line">      echo &#x27;pow fail&#x27;</span><br><span class="line">      exit 1</span><br><span class="line">    fi</span><br><span class="line">  fi</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">exec &quot;$@&quot; # 执行传入的参数</span><br></pre></td></tr></table></figure></li>
+<li>启动一个 nsjail 服务，监听 1337 端口来执行 maybe_pow.sh，具体参数解释如下  </li>
 </ol>
 </li>
 </ol>
-<p>这里通过 docker 将题目搭建起来，(因为需要设置 cgroups 限制，所以使用 –privileged 参数)。访问 1337 端口，发现其类似于 docker run/exec 的功能：<br><img src="https://cdn.nlark.com/yuque/0/2022/png/2330752/1663667149643-d49eced1-ef56-4577-90f4-3d52f270461b.png#averageHue=%232b0d1f&clientId=ud4053be2-21b5-4&from=paste&height=548&id=ud221f89b&name=image.png&originHeight=548&originWidth=376&originalType=binary&ratio=1&rotation=0&showTitle=false&size=249300&status=done&style=none&taskId=u27e6fb63-6c3f-420c-b0a5-0cd71967ee9&title=&width=376" alt="image.png"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">su user -c # 以 user 用户执行</span><br><span class="line">/usr/bin/nsjail </span><br><span class="line">    -Ml --port 1337 # 监听 1337 port</span><br><span class="line">    --chroot / # 没有切换根目录</span><br><span class="line">    -R /tmp/flag:/flag # 将 /tmp/flag 只读方式绑定挂载到 /flag</span><br><span class="line">    -T /tmp # 在 /tmp 处挂载一个 tmpfs</span><br><span class="line">    --proc_rw # 将 procfs 挂载为可读写模式</span><br><span class="line">    -U 0:1000:1 # 隔离环境内的 UID/GID 0和1 分别映射为环境外的 1000 和 100000</span><br><span class="line">    -U 1:100000:1 </span><br><span class="line">    -G 0:1000:1 </span><br><span class="line">    -G 1:100000:1 </span><br><span class="line">    --keep_caps # 保留所有 capablities</span><br><span class="line">    --cgroup_mem_max 209715200 </span><br><span class="line">    --cgroup_pids_max 100 </span><br><span class="line">    --cgroup_cpu_ms_per_sec 100 </span><br><span class="line">    --rlimit_as max </span><br><span class="line">    --rlimit_cpu max </span><br><span class="line">    --rlimit_nofile max </span><br><span class="line">    --rlimit_nproc max </span><br><span class="line">    -- /usr/bin/stdbuf -i0 -o0 -e0 /usr/bin/maybe_pow.sh /home/user/chal # 设置 input/output/error 输出无缓冲</span><br></pre></td></tr></table></figure>
+
+<p>maybe_pow.sh 中的内容为: (这里的 pow… 均不重要，只关注 exec “$@”)，结合上面的参数也就是执行 /home/user/chal</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">if [ -f /pow ]; then # 如果 /pow 存在</span><br><span class="line">  POW=&quot;$(cat /pow)&quot;  # POW = /pow 的内容</span><br><span class="line">  if [ $&#123;POW&#125; != 0 ]; then # 如果 $POW 变量 != 0</span><br><span class="line">    if ! /usr/bin/pow.py ask &quot;$&#123;POW&#125;&quot;; then # 如果 &quot;pow.py ask $POW&quot; 执行返回值 == 0, 脚本退出</span><br><span class="line">      echo &#x27;pow fail&#x27;</span><br><span class="line">      exit 1</span><br><span class="line">    fi</span><br><span class="line">  fi</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">exec &quot;$@&quot; # 执行传入的参数</span><br></pre></td></tr></table></figure>
+
+<p>这里通过 docker 将题目搭建起来，(因为需要设置 cgroups 限制，所以使用 –privileged 参数)。访问 1337 端口，发现其类似于 docker run/exec 的功能：<br><img src="https://b3logfile.com/file/2023/03/solo-fetchupload-3286347138440346285-CMF5H7Q.png" alt="image.png"></p>
 <h2 id="namespaces-可执行文件逻辑"><a href="#namespaces-可执行文件逻辑" class="headerlink" title="namespaces 可执行文件逻辑"></a>namespaces 可执行文件逻辑</h2><p><del>通过逆向，</del>其主要逻辑为：<br><strong>main():</strong><br>主线程，给出命令提示 1\2\3，分别跳入对应线程，收到 &gt;=3 则退出</p>
 <p><strong>Start_sandbox():</strong><br>选项1对应处理函数</p>
 <ol>
-<li>Fork 一个新进程使用全新的 namespace <ol>
+<li>Fork 一个新进程使用全新的 namespace<ol>
 <li>将父 user namespace 中的 userid 1 映射到新 user namespace 中的 userid 1（低权限用户)</li>
 <li>父进程返回主循环，子进程继续执行</li>
 </ol>
 </li>
 <li>读取用户提供的 init 二进制文件，将其加载到 memfd 中</li>
-<li>创建目录 /tmp/chroots/$idx，(<strong>mode 777</strong>)，idx 是已创建 sandbox 的数量 </li>
+<li>创建目录 /tmp/chroots/$idx，(<strong>mode 777</strong>)，idx 是已创建 sandbox 的数量</li>
 </ol>
 <p><strong>这两步中间需要 TOCTOU</strong></p>
 <ol start="4">
-<li>chroot 到上述目录 </li>
+<li>chroot 到上述目录</li>
 <li>通过 setresuid()/setresgid() 改变用户/用户组到 1（降权）</li>
 <li>执行来自 memfd 的 init 二进制文件</li>
 </ol>
@@ -159,7 +165,7 @@ maybe_pow.sh 中的内容为: (这里的 pow… 均不重要，只关注 exec �
 </ol>
 </li>
 <li>子进程根据用户给定的沙盒序号找到沙盒内的初始进程（上面 start 输入的 elf 程序）</li>
-<li>依次打开并加入 /proc/[初始进程PID]/ns/ 下的** user、mnt、pid、uts、ipc 和 cgroup 命名空间（没有 net）**<br>[其中，在加入 pid 命名空间后执行了一次 fork，真正切换到目标 pid 命名空间（因为 pid namespace 比较特殊，当前进程的 pid namespace 并不会改变，只有子进程才会）, fork 后的父进程退出]</li>
+<li>依次打开并加入 /proc/[初始进程PID]/ns/ 下的<strong>user、mnt、pid、uts、ipc 和 cgroup 命名空间（没有 net）</strong><br>[其中，在加入 pid 命名空间后执行了一次 fork，真正切换到目标 pid 命名空间（因为 pid namespace 比较特殊，当前进程的 pid namespace 并不会改变，只有子进程才会）, fork 后的父进程退出]</li>
 <li>子进程（新的 pid ns）根据沙盒序号找到 /tmp/chroots/[沙盒序号]/，切换根目录到这里</li>
 <li>通过 setresuid()/setresgid() 降权为 1 号用户</li>
 <li>执行来自 memfd 的 elf 文件</li>
@@ -200,11 +206,11 @@ maybe_pow.sh 中的内容为: (这里的 pow… 均不重要，只关注 exec �
 </blockquote>
 <p><em>不允许创建新的 user ns 还是创建后不能获得 cap_sys_admin? 创建新的 user ns 会获得哪些 cap?</em><br><a target="_blank" rel="noopener" href="https://unix.stackexchange.com/questions/442996/what-rule-prevents-entering-a-user-namespace-from-inside-a-chroot">prevents entering a user namespace from inside a chroot</a><br>chroot 前后，cap_sys_admin 不会变化。<br>chroot 过的进程不允许创建新的 user namespace。众所周知，在具有 CAP_SYS_CHROOT 的情况下，chroot 逃逸非常轻松（通过嵌套一个 chroot），而新的 user ns 会将全部 cap 赋予一个普通 uid（外部视角来看），这会导致一个普通用户逃逸 chroot。<br>同时可以在 <code>man 2 clone</code>，<code>man 2 unshare</code> 中看到对应描述：</p>
 <blockquote>
-<p>EPERM (since Linux 3.9)<br>              CLONE_NEWUSER was specified in the flags mask and the<br>              caller is in a chroot environment (i.e., the caller’s root<br>              directory does not match the root directory of the mount<br>              namespace in which it resides).</p>
+<p>EPERM (since Linux 3.9)<br>CLONE_NEWUSER was specified in the flags mask and the<br>caller is in a chroot environment (i.e., the caller’s root<br>directory does not match the root directory of the mount<br>namespace in which it resides).</p>
 </blockquote>
 <p><a target="_blank" rel="noopener" href="https://tinylab.org/user-namespace/">https://tinylab.org/user-namespace/</a><br>新创建一个 user namespace 会重新规划这个 ns 的 capability 能力，和这个 user namespace 父辈的 capability 能力无关。在新 user namespace 中 uid 0 等于 root 默认拥有所有 capability，普通用户的 capability 是在 exec() 时由 task-&gt;real_cred-&gt;cap_inheritable + file capability 综合而成。</p>
 <h2 id="相关知识"><a href="#相关知识" class="headerlink" title="相关知识"></a>相关知识</h2><h3 id="chroot-逃逸-1"><a href="#chroot-逃逸-1" class="headerlink" title="chroot 逃逸"></a>chroot 逃逸</h3><p><a target="_blank" rel="noopener" href="https://github.com/earthquake/chw00t">https://github.com/earthquake/chw00t</a><br>chroot 逃逸的成因是使用一个 root_path 之外的文件描述符，对其使用 .. 相对路径，可以越过 root_path 的限制。因为该描述符在进程的 root_path(从 /proc/xxx/root 中查看指向 “/../“) 之外，所以原始的 root dir 是这个进程能找到的下一个 root barrier，使用 .. 可以一直跳到此 root barrier 为止。<br>至于为什么不能从 docker container 中逃逸到宿主机，除了执行权限等因素外，是因为在 container 视图的 mount 树中，overlay 挂载点是其 root 节点（从/proc/xx/root 中查看指向 “/“），作用相当于一个 root barrier。（这里需要看源码深入分析下）<br>而题目这里只使用了 chroot 来切换 root 目录，虽然也进入了新的 mnt ns，但并没有挂载新的根目录（需要了解一下 docker run 的流程，pivot_root的安全性）<br><a target="_blank" rel="noopener" href="https://unix.stackexchange.com/questions/456620/how-to-perform-chroot-with-linux-namespaces">chroot 和 pivot_root</a><br>对于其源码分析和 mnt namespace 隔离的情况，需要看一下内核 lookup/openat 文件打开流程相关的函数</p>
-<p>chroot 的 man page：<br><img src="https://cdn.nlark.com/yuque/0/2022/png/2330752/1663674181586-61552064-4b93-475b-8013-b636e5effa9c.png#averageHue=%23fcfcfb&clientId=ud4053be2-21b5-4&from=paste&height=140&id=u5535b7eb&name=image.png&originHeight=140&originWidth=663&originalType=binary&ratio=1&rotation=0&showTitle=false&size=49699&status=done&style=none&taskId=ud1a5307f-44d1-4f33-b975-8eac60465f5&title=&width=663" alt="image.png"><br>最经典的情况：chroot 对具有 CAP_SYS_CHROOT 的进程/用户是不存在限制的，可以通过简单的二次 chroot(目的也是<strong>获得一个 chroot 外的文件描述符</strong>) 来逃逸。</p>
+<p>chroot 的 man page：<br><img src="https://b3logfile.com/file/2023/03/solo-fetchupload-7011856655724033912-FY9x1Yz.png" alt="image.png"><br>最经典的情况：chroot 对具有 CAP_SYS_CHROOT 的进程/用户是不存在限制的，可以通过简单的二次 chroot(目的也是<strong>获得一个 chroot 外的文件描述符</strong>) 来逃逸。</p>
 <h3 id="ptrace-注入"><a href="#ptrace-注入" class="headerlink" title="ptrace 注入"></a>ptrace 注入</h3><p>ptrace 的条件：</p>
 <blockquote>
 <p>To be able to ptrace the process, it has to be in the same pid namespace as us and we have to have the CAP_SYS_PTRACE capability.</p>
@@ -214,36 +220,16 @@ maybe_pow.sh 中的内容为: (这里的 pow… 均不重要，只关注 exec �
 <li>调试者需要有 CAP_SYS_PTRACE</li>
 </ol>
 <h2 id="我的思考"><a href="#我的思考" class="headerlink" title="我的思考"></a>我的思考</h2><ul>
-<li><p>依次打开、加入、打开、加入 /proc/[init 进程 pid]/ns/ 下的 namespace 是不正常的，感觉很少有这种情况吧，因为 setns 加入到新的 mnt ns 之后，进程的根文件系统会变化到容器的不可信环境中。_ 会吗？实验一下<br>倒是有可能有这种情况，依次调用 setns_</p>
-</li>
-<li><p><em>能不能先在容器外打开文件描述符，然后进入 ns (mnt)后，再访问呢？</em></p>
-<h2 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a>TODO</h2></li>
-<li><p>linux 文件知识，做下笔记</p>
-</li>
-<li><p>实验未 chroot 时能不能通过新建。。</p>
-<ul>
-<li>可以，新建 usernamespace 不需要任何 cap，创建好的 user ns 中的 root（被映射的）会带有所有 cap</li>
+<li>依次打开、加入、打开、加入 /proc/[init 进程 pid]/ns/ 下的 namespace 是不正常的，感觉很少有这种情况吧，因为 setns 加入到新的 mnt ns 之后，进程的根文件系统会变化到容器的不可信环境中。<em>会吗？实验一下<br>倒是有可能有这种情况，依次调用 setns</em></li>
 </ul>
-</li>
-<li><p>实验 chroot 之后能不能通过新建 usernamespace 来获得 sys_cap_admin</p>
 <ul>
-<li>不能 <a target="_blank" rel="noopener" href="https://unix.stackexchange.com/questions/442996/what-rule-prevents-entering-a-user-namespace-from-inside-a-chroot">https://unix.stackexchange.com/questions/442996/what-rule-prevents-entering-a-user-namespace-from-inside-a-chroot</a></li>
+<li>能不能先在容器外打开文件描述符，然后进入 ns (mnt)后，再访问呢?</li>
 </ul>
-</li>
-<li><p>ptrace 条件，为什么需要新建 pid ns</p>
-<ul>
-<li><ol>
-<li>调试进程要和被调试进程在一个 pid ns 中（被调试应该可以有更下层的 pid ns，会被映射到上层 pid ns 中）</li>
-</ol>
-</li>
-<li>调试者需要有该 pid ns 中的 CAP_SYS_PTRACE</li>
-</ul>
-</li>
-</ul>
-<ol start="2">
-<li>调试者需要有 CAP_SYS_PTRACE</li>
-</ol>
-<ul>
+<h2 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a>TODO</h2><ul>
+<li>linux 文件知识，做下笔记</li>
+<li>实验未 chroot 时能不能通过新建。。<br>可以，新建 usernamespace 不需要任何 cap，创建好的 user ns 中的 root（被映射的）会带有所有 cap</li>
+<li>实验 chroot 之后能不能通过新建 usernamespace 来获得 sys_cap_admin<br>不能, <a target="_blank" rel="noopener" href="https://unix.stackexchange.com/questions/442996/what-rule-prevents-entering-a-user-namespace-from-inside-a-chroot">https://unix.stackexchange.com/questions/442996/what-rule-prevents-entering-a-user-namespace-from-inside-a-chroot</a></li>
+<li>ptrace 条件，为什么需要新建 pid ns<br>(1) 调试进程要和被调试进程在一个 pid ns 中（被调试应该可以有更下层的 pid ns，会被映射到上层 pid ns 中）<br>(2) 调试者需要有该 pid ns 中的 CAP_SYS_PTRACE</li>
 <li>分析题解代码</li>
 </ul>
 
