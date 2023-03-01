@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="Firecracker 环境配置"/><meta name="keywords" content="安全容器, click's Blog" /><link rel="alternate" href="/atom.xml" title="click's Blog" type="application/atom+xml"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0" />
+<link rel="canonical" href="https://click.500team.cn/2022/06/19/Firecracker-环境配置/"/>
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0" />
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":false};
+</script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqusjs.css">
+
+
+    <title>Firecracker 环境配置 - click's Blog</title>
+  <meta name="generator" content="Hexo 5.4.0"></head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">click's Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">Home
+          </li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags
+          </li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">click's Blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            Home
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags/">
+            Tags
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/about/">
+            About
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">Firecracker 环境配置
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2022-06-19
+        </span><span class="post-author">
+          / click
+        </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E9%85%8D%E7%BD%AE"><span class="toc-text">主机配置</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E6%9C%9F%E5%87%86%E5%A4%87"><span class="toc-text">前期准备</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96-Firecracker-%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6"><span class="toc-text">获取 Firecracker 二进制文件</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C-Firecracker"><span class="toc-text">运行 Firecracker</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8D%E5%8F%91%E9%80%81-API-requests-%E6%9D%A5%E9%85%8D%E7%BD%AE-microVM"><span class="toc-text">不发送 API requests 来配置 microVM</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Links"><span class="toc-text">Links</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Todo"><span class="toc-text">Todo</span></a></li></ol>
+    </div>
+  </div><div class="post-content"><p><img src="https://b3logfile.com/bing/20220518.jpg?imageView2/1/w/960/h/540/interlace/1/q/100"></p>
+<p><a name="nLCRy"></a></p>
+<h1 id="主机配置"><a href="#主机配置" class="headerlink" title="主机配置"></a>主机配置</h1><ul>
+<li>ubuntu 18.04 物理机</li>
+<li>x86_64 架构<br><a name="Em4hc"></a></li>
+</ul>
+<h1 id="前期准备"><a href="#前期准备" class="headerlink" title="前期准备"></a>前期准备</h1><ul>
+<li>增加 <code>/dev/kvm</code> 权限，<code>sudo setfacl -m u:$&#123;USER&#125;:rw /dev/kvm</code></li>
+<li>检查系统符合要求去运行 Firecracker，运行项目源码中 <code>tools/devtool checkenv</code><ul>
+<li>出现的 <code>WARNING</code>暂时不知道有什么影响<img src="https://b3logfile.com/file/2022/06/solo-fetchupload-13256995363828070405-86a7ff60.png" alt="image.png"><br><a name="b0BgP"></a></li>
+</ul>
+</li>
+</ul>
+<h1 id="获取-Firecracker-二进制文件"><a href="#获取-Firecracker-二进制文件" class="headerlink" title="获取 Firecracker 二进制文件"></a>获取 Firecracker 二进制文件</h1><p>获取与机器架构对应的最新的 firecracker 二进制文件：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">release_url=&quot;https://github.com/firecracker-microvm/firecracker/releases&quot;</span><br><span class="line">latest=$(basename $(curl -fsSLI -o /dev/null -w  %&#123;url_effective&#125; $&#123;release_url&#125;/latest))</span><br><span class="line">arch=`uname -m`</span><br><span class="line">curl -L $&#123;release_url&#125;/download/$&#123;latest&#125;/firecracker-$&#123;latest&#125;-$&#123;arch&#125;.tgz \</span><br><span class="line">| tar -xz</span><br></pre></td></tr></table></figure>
+
+<p>将解压的文件夹中的 firecracker 二进制文件改名：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd release-$&#123;latest&#125;-$(uname -m)</span><br><span class="line">mv firecracker-$&#123;latest&#125;-$(uname -m) firecracker</span><br></pre></td></tr></table></figure>
+
+<p>或者选择<a target="_blank" rel="noopener" href="https://github.com/firecracker-microvm/firecracker/blob/main/docs/getting-started.md#building-from-source">从源码编译</a><br><a name="jljeG"></a></p>
+<h1 id="运行-Firecracker"><a href="#运行-Firecracker" class="headerlink" title="运行 Firecracker"></a>运行 Firecracker</h1><blockquote>
+<p>NOTE: 在生产环境中，Firecracker 被设计成在沙盒中安全运行，由 <code>jailer</code> 程序精心设置。 我们的集成测试套件也是这样实现的。然而，如果你只想看到 Firecracker 启动一个 Linux 客户机，你可以按如下操作。</p>
+</blockquote>
+<ol>
+<li>确认已拥有可运行的 <code>firecracker</code> 二进制文件（上一步下载的）</li>
+<li>需要解压好的 linux kernel 二进制文件和一个 ext4 文件映像（用来作为 rootfs）<br />x86_64 示例文件：<a target="_blank" rel="noopener" href="https://s3.amazonaws.com/spec.ccfc.min/img/quickstart_guide/x86_64/kernels/vmlinux.bin">kernel</a>、<a target="_blank" rel="noopener" href="https://s3.amazonaws.com/spec.ccfc.min/img/quickstart_guide/x86_64/rootfs/bionic.rootfs.ext4">rootfs</a></li>
+<li>打开两个 shell：一个用来运行 Firecracker，另一个用来控制它（通过向 API socket 写内容）</li>
+</ol>
+<p>在 shell1 中：</p>
+<ul>
+<li>确认没有已有的 firecracker API socket</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rm -f /tmp/firecracker.socket</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>启动 Firecracker</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./firecracker --api-sock /tmp/firecracker.socket</span><br></pre></td></tr></table></figure>
+
+<p>在 shell2 中：</p>
+<ul>
+<li>设置客户机内核（我的物理机架构是 x86_64）</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">kernel_path=&quot;....../hello-vmlinux.bin&quot;</span><br><span class="line"></span><br><span class="line">curl --unix-socket /tmp/firecracker.socket -i\</span><br><span class="line">  -X PUT &#x27;http://localhost/boot-source&#x27;  \</span><br><span class="line">  -H &#x27;Accept: application/json&#x27;          \</span><br><span class="line">  -H &#x27;Content-Type: application/json&#x27;    \</span><br><span class="line">  -d &quot;&#123;</span><br><span class="line">         \&quot;kernel_image_path\&quot;: \&quot;$&#123;kernel_path&#125;\&quot;,</span><br><span class="line">         \&quot;boot_args\&quot;: \&quot;console=ttyS0 reboot=k panic=1 pci=off\&quot;</span><br><span class="line">  &#125;&quot;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>设置客户机 rootfs</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">rootfs_path=&quot;....../hello-rootfs.ext4&quot;</span><br><span class="line"></span><br><span class="line">curl --unix-socket /tmp/firecracker.socket -i \</span><br><span class="line">  -X PUT &#x27;http://localhost/drives/rootfs&#x27; \</span><br><span class="line">  -H &#x27;Accept: application/json&#x27;           \</span><br><span class="line">  -H &#x27;Content-Type: application/json&#x27;     \</span><br><span class="line">  -d &quot;&#123;</span><br><span class="line">        \&quot;drive_id\&quot;: \&quot;rootfs\&quot;,</span><br><span class="line">        \&quot;path_on_host\&quot;: \&quot;$&#123;rootfs_path&#125;\&quot;,</span><br><span class="line">        \&quot;is_root_device\&quot;: true,</span><br><span class="line">        \&quot;is_read_only\&quot;: false</span><br><span class="line">   &#125;&quot;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>启动客户机</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">curl --unix-socket /tmp/firecracker.socket -i \</span><br><span class="line">  -X PUT &#x27;http://localhost/actions&#x27;       \</span><br><span class="line">  -H  &#x27;Accept: application/json&#x27;          \</span><br><span class="line">  -H  &#x27;Content-Type: application/json&#x27;    \</span><br><span class="line">  -d &#x27;&#123;</span><br><span class="line">      &quot;action_type&quot;: &quot;InstanceStart&quot;</span><br><span class="line">   &#125;&#x27;</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>返回 shell1，将看到进入了一个新 shell，提示登录到客户机器。如果用的 <code>hello-rootfs.ext4</code> 映像，则用户名密码均为 <code>root</code>。</li>
+<li>可以在客户机器中使用 <code>reboot</code> 命令，将会优雅的关闭 firecracker，这是因为 firecracker 并没有实现客户机电源管理。</li>
+</ol>
+<blockquote>
+<p>NOTE: 默认的 microVM 将会使用 1 vCPU 和 128 MiB RAM。如果你想定制其大小，可以在发出 <code>InstanceStart</code> 调用之前，通过 API command 修改</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">curl --unix-socket /tmp/firecracker.socket -i  \</span><br><span class="line">  -X PUT &#x27;http://localhost/machine-config&#x27; \</span><br><span class="line">  -H &#x27;Accept: application/json&#x27;            \</span><br><span class="line">  -H &#x27;Content-Type: application/json&#x27;      \</span><br><span class="line">  -d &#x27;&#123;</span><br><span class="line">      &quot;vcpu_count&quot;: 2,</span><br><span class="line">      &quot;mem_size_mib&quot;: 1024</span><br><span class="line">  &#125;&#x27;</span><br></pre></td></tr></table></figure>
+
+<p><a name="bOwgq"></a></p>
+<h2 id="不发送-API-requests-来配置-microVM"><a href="#不发送-API-requests-来配置-microVM" class="headerlink" title="不发送 API requests 来配置 microVM"></a>不发送 API requests 来配置 microVM</h2><p>如果你不想通过使用 API socket 来启动一个客户机，你可以通过传递参数 <code>--config-file</code> 给 Firecracker 进程来实现。使用其启动 Firecracker 的命令像下面这样：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./firecracker --api-sock /tmp/firecracker.socket --config-file &lt;path_to_the_configuration_file&gt;</span><br></pre></td></tr></table></figure>
+
+<p><code>path_to_the_configuration_file</code> 应该是一个 json 文件的路径，该文件存储了所有 microVM 资源的配置。其必须包含客户机 <code>kernel</code> 和 <code>rootfs</code> 的配置，因为他们是必须的，其他所有资源都是可选的。<br />因为使用此配置方法也将直接启动 microVM，因此需要在该 json 中指定所有所需的启动前（<code>pre-boot</code>）可配置资源。资源的名称可以从 <code>src/api_server/swagger/firacracker.yaml</code> 中查看，其字段的名称和使用 API requests 配置时相同。<code>test/framwork/vm_config.json</code> 是一个配置文件的示例。在机器启动后，你仍然可以使用 socket 来发送 API requests 发送启动后（<code>post-boot</code>）操作的 API 请求。</p>
+<p><a name="HyZWD"></a></p>
+<h1 id="Links"><a href="#Links" class="headerlink" title="Links"></a>Links</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://aws.amazon.com/cn/blogs/china/deep-analysis-aws-firecracker-principle-virtualization-container-runtime-technology/">深度解析 AWS Firecracker 原理篇 – 虚拟化与容器运行时技术</a></li>
+<li><a target="_blank" rel="noopener" href="https://aws.amazon.com/cn/blogs/china/in-depth-analysis-of-aws-firecracker/">深度解析 AWS Firecracker 实战篇 – 一起动手点炮竹</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/firecracker-microvm/firecracker">Firecracker</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/firecracker-microvm/firecracker/blob/main/docs/getting-started.md">Getting Started with Firecracker</a></li>
+</ul>
+<p><a name="jWuOb"></a></p>
+<h1 id="Todo"><a href="#Todo" class="headerlink" title="Todo"></a>Todo</h1><ul>
+<li>Firecracker 介绍及使用</li>
+<li>Firecracker 配合容器运行时实现安全容器</li>
+</ul>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>Author: </span>
+      <a href="https://click.500team.cn">click</a>
+    </p>
+    <p class="copyright-item">
+      <span>Link: </span>
+      <a href="https://click.500team.cn/2022/06/19/Firecracker-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/">https://click.500team.cn/2022/06/19/Firecracker-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/</a>
+    </p>
+    <p class="copyright-item">
+      <span>License: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/%E5%AE%89%E5%85%A8%E5%AE%B9%E5%99%A8/">安全容器</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2022/10/01/35c3ctf/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">35c3CTF namespace sandbox 分析</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    <a class="next" href="/2022/06/15/docker-%E5%BA%95%E5%B1%82%E6%8A%80%E6%9C%AF%E6%B5%85%E6%9E%90/">
+        <span class="next-text nav-default">docker 底层技术浅析</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:c1ick9917@gmail.com" class="iconfont icon-email" title="email"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2020 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">click</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script src="https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js"></script>
+<script type="text/javascript">
+  var dsqjs = new DisqusJS({
+      shortname: '500team',
+      identifier: '2022/06/19/Firecracker-环境配置/',
+      url: 'https://click.500team.cn/2022/06/19/Firecracker-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/',
+      title: 'Firecracker 环境配置',
+      api: 'https://disqus.skk.moe/disqus/',
+      apikey: 'ClrDj075UU1Z575IOeVGwbZgwt5k5XVEWj2wyvN8u0U81jg3ynJZF3FSBAMUmGRb',
+      admin: '500team',
+      adminLabel: ''
+  });
+</script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script>
+</body>
+</html>

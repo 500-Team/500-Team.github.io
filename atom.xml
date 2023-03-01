@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>500&#39;s Blog</title>
-  <icon>https://500team.cn/icon.png</icon>
+  <title>click&#39;s Blog</title>
+  <icon>https://click.500team.cn/icon.png</icon>
   
-  <link href="https://500team.cn/atom.xml" rel="self"/>
+  <link href="https://click.500team.cn/atom.xml" rel="self"/>
   
-  <link href="https://500team.cn/"/>
+  <link href="https://click.500team.cn/"/>
   <updated>2023-02-28T17:05:16.620Z</updated>
-  <id>https://500team.cn/</id>
+  <id>https://click.500team.cn/</id>
   
   <author>
-    <name>500</name>
+    <name>click</name>
     
   </author>
   
@@ -18,8 +18,8 @@
   
   <entry>
     <title>CVE-2019-14271 分析复现</title>
-    <link href="https://500team.cn/2022/11/15/CVE-2019-14271/"/>
-    <id>https://500team.cn/2022/11/15/CVE-2019-14271/</id>
+    <link href="https://click.500team.cn/2022/11/15/CVE-2019-14271/"/>
+    <id>https://click.500team.cn/2022/11/15/CVE-2019-14271/</id>
     <published>2022-11-15T12:20:12.000Z</published>
     <updated>2023-02-28T17:05:16.620Z</updated>
     
@@ -32,14 +32,14 @@
     
     
     
-    <category term="CVE复现" scheme="https://500team.cn/tags/CVE%E5%A4%8D%E7%8E%B0/"/>
+    <category term="CVE复现" scheme="https://click.500team.cn/tags/CVE%E5%A4%8D%E7%8E%B0/"/>
     
   </entry>
   
   <entry>
     <title>CVE-2018-15664 分析复现</title>
-    <link href="https://500team.cn/2022/11/04/CVE-2018-15664/"/>
-    <id>https://500team.cn/2022/11/04/CVE-2018-15664/</id>
+    <link href="https://click.500team.cn/2022/11/04/CVE-2018-15664/"/>
+    <id>https://click.500team.cn/2022/11/04/CVE-2018-15664/</id>
     <published>2022-11-04T07:31:23.000Z</published>
     <updated>2023-02-28T16:46:42.139Z</updated>
     
@@ -52,14 +52,14 @@
     
     
     
-    <category term="CVE复现" scheme="https://500team.cn/tags/CVE%E5%A4%8D%E7%8E%B0/"/>
+    <category term="CVE复现" scheme="https://click.500team.cn/tags/CVE%E5%A4%8D%E7%8E%B0/"/>
     
   </entry>
   
   <entry>
     <title>CVE-2019-5736 分析复现</title>
-    <link href="https://500team.cn/2022/10/20/CVE-2019-5736-%E5%88%86%E6%9E%90%E5%A4%8D%E7%8E%B0/"/>
-    <id>https://500team.cn/2022/10/20/CVE-2019-5736-%E5%88%86%E6%9E%90%E5%A4%8D%E7%8E%B0/</id>
+    <link href="https://click.500team.cn/2022/10/20/CVE-2019-5736-%E5%88%86%E6%9E%90%E5%A4%8D%E7%8E%B0/"/>
+    <id>https://click.500team.cn/2022/10/20/CVE-2019-5736-%E5%88%86%E6%9E%90%E5%A4%8D%E7%8E%B0/</id>
     <published>2022-10-20T03:27:33.000Z</published>
     <updated>2022-10-20T04:52:24.281Z</updated>
     
@@ -72,14 +72,14 @@
     
     
     
-    <category term="CVE复现" scheme="https://500team.cn/tags/CVE%E5%A4%8D%E7%8E%B0/"/>
+    <category term="CVE复现" scheme="https://click.500team.cn/tags/CVE%E5%A4%8D%E7%8E%B0/"/>
     
   </entry>
   
   <entry>
     <title>35c3CTF namespace sandbox 分析</title>
-    <link href="https://500team.cn/2022/10/01/35c3ctf/"/>
-    <id>https://500team.cn/2022/10/01/35c3ctf/</id>
+    <link href="https://click.500team.cn/2022/10/01/35c3ctf/"/>
+    <id>https://click.500team.cn/2022/10/01/35c3ctf/</id>
     <published>2022-10-01T12:03:21.000Z</published>
     <updated>2023-02-28T17:05:59.617Z</updated>
     
@@ -92,14 +92,77 @@
     
     
     
-    <category term="TODO" scheme="https://500team.cn/tags/TODO/"/>
+    <category term="TODO" scheme="https://click.500team.cn/tags/TODO/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Firecracker 环境配置</title>
+    <link href="https://click.500team.cn/2022/06/19/Firecracker-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/"/>
+    <id>https://click.500team.cn/2022/06/19/Firecracker-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/</id>
+    <published>2022-06-19T03:28:29.000Z</published>
+    <updated>2023-03-01T03:31:42.561Z</updated>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;&lt;img src=&quot;https://b3logfile.com/bing/20220518.jpg?imageView2/1/w/960/h/540/interlace/1/q/100&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a name=&quot;nLCRy&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h1 id=&quot;主机</summary>
+      
+    
+    
+    
+    
+    <category term="安全容器" scheme="https://click.500team.cn/tags/%E5%AE%89%E5%85%A8%E5%AE%B9%E5%99%A8/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>docker 底层技术浅析</title>
+    <link href="https://click.500team.cn/2022/06/15/docker-%E5%BA%95%E5%B1%82%E6%8A%80%E6%9C%AF%E6%B5%85%E6%9E%90/"/>
+    <id>https://click.500team.cn/2022/06/15/docker-%E5%BA%95%E5%B1%82%E6%8A%80%E6%9C%AF%E6%B5%85%E6%9E%90/</id>
+    <published>2022-06-15T03:26:52.000Z</published>
+    <updated>2023-03-01T03:35:04.169Z</updated>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;1-演进&quot;&gt;&lt;a href=&quot;#1-演进&quot; class=&quot;headerlink&quot; title=&quot;1. 演进&quot;&gt;&lt;/a&gt;1. 演进&lt;/h1&gt;&lt;p&gt;对于统一开发、测试、生产环境的渴望，要远远早于 docker 的出现。先了解一下在 docker 出现之前出现过哪些解决</summary>
+      
+    
+    
+    
+    
+    <category term="docker" scheme="https://click.500team.cn/tags/docker/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>容器基础设施的风险分析</title>
+    <link href="https://click.500team.cn/2022/04/02/%E5%AE%B9%E5%99%A8%E5%9F%BA%E7%A1%80%E8%AE%BE%E6%96%BD%E7%9A%84%E9%A3%8E%E9%99%A9%E5%88%86%E6%9E%90/"/>
+    <id>https://click.500team.cn/2022/04/02/%E5%AE%B9%E5%99%A8%E5%9F%BA%E7%A1%80%E8%AE%BE%E6%96%BD%E7%9A%84%E9%A3%8E%E9%99%A9%E5%88%86%E6%9E%90/</id>
+    <published>2022-04-02T03:29:32.000Z</published>
+    <updated>2023-03-01T03:31:01.978Z</updated>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;docker 全景图：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://b3logfile.com/file/2022/04/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20220406133729-b352b726.jpg&quot; alt=&quot;微信</summary>
+      
+    
+    
+    
+    
+    <category term="笔记" scheme="https://click.500team.cn/tags/%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
   <entry>
     <title>500 blog</title>
-    <link href="https://500team.cn/2021/05/27/500-blog/"/>
-    <id>https://500team.cn/2021/05/27/500-blog/</id>
+    <link href="https://click.500team.cn/2021/05/27/500-blog/"/>
+    <id>https://click.500team.cn/2021/05/27/500-blog/</id>
     <published>2021-05-27T09:20:15.000Z</published>
     <updated>2022-10-20T04:52:24.280Z</updated>
     
@@ -112,14 +175,14 @@
     
     
     
-    <category term="blog" scheme="https://500team.cn/tags/blog/"/>
+    <category term="blog" scheme="https://click.500team.cn/tags/blog/"/>
     
   </entry>
   
   <entry>
     <title>DVD--PHP运行时漏洞挖掘系统</title>
-    <link href="https://500team.cn/2020/06/13/dvd/"/>
-    <id>https://500team.cn/2020/06/13/dvd/</id>
+    <link href="https://click.500team.cn/2020/06/13/dvd/"/>
+    <id>https://click.500team.cn/2020/06/13/dvd/</id>
     <published>2020-06-13T02:18:26.000Z</published>
     <updated>2023-03-01T03:07:50.154Z</updated>
     
@@ -132,7 +195,7 @@
     
     
     
-    <category term="project" scheme="https://500team.cn/tags/project/"/>
+    <category term="project" scheme="https://click.500team.cn/tags/project/"/>
     
   </entry>
   

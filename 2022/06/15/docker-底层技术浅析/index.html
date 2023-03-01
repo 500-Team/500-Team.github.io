@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="docker 底层技术浅析"/><meta name="keywords" content="docker, click's Blog" /><link rel="alternate" href="/atom.xml" title="click's Blog" type="application/atom+xml"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0" />
+<link rel="canonical" href="https://click.500team.cn/2022/06/15/docker-底层技术浅析/"/>
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0" />
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":"","latex":false};
+</script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqusjs.css">
+
+
+    <title>docker 底层技术浅析 - click's Blog</title>
+  <meta name="generator" content="Hexo 5.4.0"></head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">click's Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">Home
+          </li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags
+          </li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">click's Blog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            Home
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags/">
+            Tags
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/about/">
+            About
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">docker 底层技术浅析
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2022-06-15
+        </span><span class="post-author">
+          / click
+        </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E6%BC%94%E8%BF%9B"><span class="toc-text">1. 演进</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-1-vagrant"><span class="toc-text">1.1 vagrant</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2-LXC%EF%BC%88LinuX-Container%EF%BC%89"><span class="toc-text">1.2 LXC（LinuX Container）</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E6%8A%80%E6%9C%AF%E5%8F%91%E5%B1%95"><span class="toc-text">2. 技术发展</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-chroot"><span class="toc-text">2.1 chroot</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-namespace"><span class="toc-text">2.1 namespace</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-cgroups"><span class="toc-text">2.2 cgroups</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-%E5%AD%98%E5%82%A8"><span class="toc-text">3. 存储</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-%E8%81%94%E5%90%88%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%EF%BC%88UFS%EF%BC%89"><span class="toc-text">3.1 联合文件系统（UFS）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-docker-%E9%95%9C%E5%83%8F%E7%9A%84%E5%AD%98%E5%82%A8%E7%AE%A1%E7%90%86"><span class="toc-text">3.2 docker 镜像的存储管理</span></a></li></ol></li></ol>
+    </div>
+  </div><div class="post-content"><h1 id="1-演进"><a href="#1-演进" class="headerlink" title="1. 演进"></a>1. 演进</h1><p>对于统一开发、测试、生产环境的渴望，要远远早于 docker 的出现。先了解一下在 docker 出现之前出现过哪些解决方案。<br><a name="oO2J5"></a></p>
+<h2 id="1-1-vagrant"><a href="#1-1-vagrant" class="headerlink" title="1.1 vagrant"></a>1.1 vagrant</h2><p>vagrant 是较早的解决环境配置不统一的技术方案。它使用 Ruby 语言编写，由 HashCorp 公司在 2010 年 1 月发布。Vagrant 的底层是虚拟机，最开始选用的是 virtualbox。一个个已经配置好的虚拟机被称作 box。用户可以自由在虚拟机内部安装依赖库和软件服务，并将 box 发布。通过简单的命令，就能够拉取 box，将环境搭建起来。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 拉取一个 Ubuntu12.04 的 box</span></span><br><span class="line">$ vagrant init hashicorp/precise32</span><br><span class="line"></span><br><span class="line"><span class="comment"># 运行该虚拟机 （不用指定 id 吗？）</span></span><br><span class="line">$ vagrant up</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看当前本地都有哪些 box</span></span><br><span class="line">$ vargrant box list</span><br></pre></td></tr></table></figure>
+
+<p>如果需要运行多个服务，也可以通过编写 vagrantfile，将相互依赖的服务仪器运行，颇有如今 docker-compose 的味道。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">config.vm.define(&quot;web&quot;)</span> <span class="string">do</span> <span class="string">|web|web.vm.box</span> <span class="string">=</span> <span class="string">&quot;apache&quot;</span></span><br><span class="line"><span class="string">end</span></span><br><span class="line"><span class="string">config.vm.define(&quot;db&quot;)</span> <span class="string">do</span> <span class="string">|db|db.vm.box</span> <span class="string">=</span> <span class="string">&quot;mysql&quot;</span></span><br><span class="line"><span class="string">end</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://b3logfile.com/file/2022/06/solo-fetchupload-3368046689546614721-ad47e31b.jpeg" alt="640.jpg"><br><a name="uBGoi"></a></p>
+<h2 id="1-2-LXC（LinuX-Container）"><a href="#1-2-LXC（LinuX-Container）" class="headerlink" title="1.2 LXC（LinuX Container）"></a>1.2 LXC（LinuX Container）</h2><p>在 2008 年，Linux 2.6.24 将 cgroups 特性合入了主干。Linux Container 是 Canonical 公司基于 namespace 和 cgroups 等技术，瞄准容器世界而开发的一个项目，目标就是要创造出运行在 Linux 系统中，并且隔离性良好的容器环境。当然它最早也就出现于 ubuntu 上。<br />2013 年，在 PyCon 大会上 Docker 正式面世。当时的 docker 是在 ubuntu 12.04 上开发实现的，只是基于 LXC 之上的一个工具，屏蔽掉了 LXC 的使用细节（类似于 vagrant 屏蔽了底层虚拟机），让用户可以一句 docker run 命令行便创建出自己的容器环境。<br><a name="cjxL7"></a></p>
+<h1 id="2-技术发展"><a href="#2-技术发展" class="headerlink" title="2. 技术发展"></a>2. 技术发展</h1><p>容器技术是操作系统层面的虚拟化技术，可以概括为使用 Linux 内核的 cgroup，namespace 等拘束，对进程进行的封装隔离。早在 docker 之前，Linux 就已经提供了今天 docker 所使用的那些基础技术。docker 一夜之间火爆全球，但技术上的积累并不是瞬间完成的。这里摘取几个关键技术节点进行介绍：<br /><img src="https://b3logfile.com/file/2022/06/solo-fetchupload-6836497827291524143-5b9697f3.jpeg" alt="640.jpg"><br><a name="slwvw"></a></p>
+<h2 id="2-1-chroot"><a href="#2-1-chroot" class="headerlink" title="2.1 chroot"></a>2.1 chroot</h2><p>软件主要分为系统软件和应用软件，而容器中运行的程序并非系统软件。容器中的进程实质上是运行在宿主机上，与宿主机上的其他进程共用一个内核。而每个应用软件运行都需要有必要的环境，包括一些 lib 库依赖之类的。所以，为了避免不同应用程序的 lib 库依赖冲突，很自然的会想到是否可以把它们进行隔离，让他们看到的库是不一样的。<br />1979 年，chroot 系统调用首次问世。这里举一个例子来说明，在 home 目录下准备好一个 alpine 系统的 rootfs，如下（宿主机并不是 alpine 系统）：<br /><img src="https://b3logfile.com/file/2022/06/solo-fetchupload-7209472752910074291-6bdb1bd3.jpeg" alt="640.jpg"><br />在该目录下执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ chroot rootfs/ /bin/bash (相对于新的 root 目录)</span><br></pre></td></tr></table></figure>
+
+<p>然后将 /etc/os-release 打印出来，就看到是  “Alpine Linux”, 说明新运行的 bash 跟宿主机上的 rootfs 隔离了。<br /><img src="https://b3logfile.com/file/2022/06/solo-fetchupload-9710951476021714217-2f1c8404.jpeg" alt="640.jpg"><br><a name="NPpNE"></a></p>
+<h2 id="2-1-namespace"><a href="#2-1-namespace" class="headerlink" title="2.1 namespace"></a>2.1 namespace</h2><p>简单来说 namespace 是由 Linux 内核提供的，用于进程间资源隔离的一种技术，是的 a，b 进程可以看到 S 资源；而 c 进程看不到。它是在 2002 年 Linux 2.4.19 开始加入内核的特性，到 2013 年 Linux 3.8 中 user namespace 的引入，对于我们现在所熟知的容器所需的全部 namespace 就都实现了。<br />Linux 提供了多种 namespace，用于对多种不同资源进行隔离。容器的实质是一组进程，但与直接在宿主机执行的进程不同，容器进程运行在属于自己的独立的 namespace。因此容器可以拥有自己的 root 文件系统、自己的网络配置、自己的进程空间、深知自己的用户 ID 空间。<br />这里举一个例子，来直观的看到 namespace 的存在：在宿主机上，执行：ls -l /proc/self/ns 看到的就是当前进程所在的 namespace。</p>
+<p><img src="https://b3logfile.com/file/2022/06/solo-fetchupload-15418666421631518126-3fbb38c6.png" alt="1654604620817.jpg"></p>
+<p>使用 unshare 命令，运行一个 bash，让它使用一个新的 pid namespace：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ unshare --pid --fork --mount-proc bash</span><br></pre></td></tr></table></figure>
+
+<p>然后运行 ps -a，看看当前 pid namespace 下的进程：</p>
+<p><img src="https://b3logfile.com/file/2022/06/solo-fetchupload-7827240163250903055-8e8d02ce.png" alt="1654604758295.jpg"></p>
+<p>在此 bash 上执行：ls -l /proc/self/ns ，会发现当前 bash 进程所在的 pid namespace 与之前是不相同的：</p>
+<p><img src="https://b3logfile.com/file/2022/06/solo-fetchupload-12668088839410624057-99dda1ed.png" alt="1654604876859.jpg"></p>
+<p>docker 也是借助 namespace 技术，来实现对系统资源的相互隔离，可以用容器中进程所属 namespace 来进行验证。<br><a name="r6Th4"></a></p>
+<h2 id="2-2-cgroups"><a href="#2-2-cgroups" class="headerlink" title="2.2 cgroups"></a>2.2 cgroups</h2><p>cgroups 是为了实现虚拟化而采取的资源管理机制，决定哪些分配给容器的资源可被我们管理，分配给容器去使用的资源的多少。例如可以设定一个 memory 使用上线，一旦进程组（容器）使用的内存达到限额再去申请内存，就会发出 OOM（out of memory），这样就不会因为某个进程消耗的内存过大而影响到其他进程的运行。<br />这里举一个例子，运行一个 alpine 容器，限制只能使用前 2 个 cpu，且只能使用 1.5 个核：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker run --rm -it --cpus <span class="string">&quot;1.5&quot;</span> --cpuset-cpus 0,1 alpine</span><br></pre></td></tr></table></figure>
+
+<p>然后再开启一个新的终端，先看看系统上有哪些资源是可以通过 cgroups 控制的：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cat /proc/cgroups</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://b3logfile.com/file/2022/06/solo-fetchupload-10079020369395101021-c894ec2a.png" alt="1654606397909.jpg"></p>
+<p>最左边一侧就是 cgroups 中所设置的子系统，分别可以限制对应类型的资源。<br />找到刚刚运行的 alpine 镜像的 cgroups 配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># docker inspect --&gt; Return low-level information on Docker objects</span></span><br><span class="line"><span class="comment"># docker ps -ql  --&gt; -q, --quiet           Only display container IDs</span></span><br><span class="line"><span class="comment">#								 --&gt; -l, --latest          Show the latest created container (includes all states)</span></span><br><span class="line">$ cat /proc$(docker inspect --format=<span class="string">&#x27;&#123;&#123;.State.Pid&#125;&#125;&#x27;</span> $(docker ps -ql))/cgroup</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://b3logfile.com/file/2022/06/solo-fetchupload-4626382324028178144-5ac1d20f.png" alt="1654607326206.jpg"></p>
+<p>（这里的 cgroup 的目录中的 <code>/</code> 是宿主机 cgroup 挂载点相应子系统目录，如 <code>/sys/fs/cgroup/cpu/</code> 等）<br />这样就可以看到这个容器的资源配置了。先验证 cpu 的用量是否为 1.5 个核：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cat /sys/fs/cgroup/cpu,cpuacct/docker/f823e0cd58e5fecc97c36e03717c14a0bb1d061e705397cf92b0026c00fc6f77/cpu.cfs_period_us</span><br></pre></td></tr></table></figure>
+
+<p>输出 100000，可以认为是单位，然后再看配额：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cat /sys/fs/cgroup/cpu,cpuacct/docker/f823e0cd58e5fecc97c36e03717c14a0bb1d061e705397cf92b0026c00fc6f77/cpu.cfs_quota_us</span><br></pre></td></tr></table></figure>
+
+<p>输出 150000，与单位相除正好是设置的 1.5 个核，接着言珩是否使用的是前两个核心：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cat /sys/fs/cgroup/cpuset/docker/f823e0cd58e5fecc97c36e03717c14a0bb1d061e705397cf92b0026c00fc6f77/cpuset.cpus</span><br></pre></td></tr></table></figure>
+
+<p>输出 0-1，与设置相同。<br />现在验证一下此限制有没有生效，在 alpine 容器终端中，执行一个死循环：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">i=0; while true; do i=i+i; done</span><br></pre></td></tr></table></figure>
+
+<p>观察当前的 cpu 用量：（此图仅用做说明，id/name 是不对应的）<br /><img src="https://b3logfile.com/file/2022/06/solo-fetchupload-3453586173134073238-71cb80db.jpeg" alt="640.jpg"></p>
+<p>接近 1，但为什么不是 1.5？因为运行的死循环只能跑在一个核上，所以我们再打开一个终端，进入到 alpine 镜像中，同样执行死循环的指令，看到 cpu 用量稳定在了 1.5，说明资源的使用量确实完成了限制。</p>
+<p><img src="https://b3logfile.com/file/2022/06/solo-fetchupload-5978130998896660236-2ca2fc44.jpeg" alt="640.jpg"></p>
+<p>如果单单就隔离性来说，vagrant 也已经做到了，那么为什么是 docker 火爆？是因为它允许用户将容器环境打包成为一个镜像进行分发，而且镜像是分层增量构建的，者可以大大降低用户使用的门槛。（我觉得是代价的问题吧，容器相比于虚拟机代价大大降低，再加上分层文件系统，使得 docker 对资源的利用率更高）<br><a name="fOk8o"></a></p>
+<h1 id="3-存储"><a href="#3-存储" class="headerlink" title="3. 存储"></a>3. 存储</h1><p>image 是 docker 部署的基本单位，它包含了程序文件，以及这个程序以来的资源的环境。docker image 是以一个 mount 点挂载到容器内部的。容器可以近似理解为镜像的运行实例，默认情况下也算是在镜像层的基础上增加了一个可写层。所以，一般情况下如果你在容器内做出的修改，均包含在这个可写层中。<br><a name="RHvbd"></a></p>
+<h2 id="3-1-联合文件系统（UFS）"><a href="#3-1-联合文件系统（UFS）" class="headerlink" title="3.1 联合文件系统（UFS）"></a>3.1 联合文件系统（UFS）</h2><p>Union File System 从字面意思上来理解就是“联合文件系统”。它将多个物理位置不同的文件目录联合起来，挂载到某一个目录下，形成一个抽象的文件系统。<br /><img src="https://b3logfile.com/file/2022/06/solo-fetchupload-6906230848474702701-5f56cabb.jpeg" alt="640.jpg"><br />如上图，从右侧以 UFS 的视角来看，lowerdir 和 upperdir 是两个不同的目录，UFS 将二者合并起来，得到 merged 层展示给调用方。从左侧的 docker 角度来理解，lowerdir 就是镜像，upperdir 就相当于是容器默认的可写层。在运行的容器中修改了文件，可以使用 docker commit 指令保存成为一个新镜像。（也就是把 merged 变成了 lowerdir）<br><a name="Vo5PU"></a></p>
+<h2 id="3-2-docker-镜像的存储管理"><a href="#3-2-docker-镜像的存储管理" class="headerlink" title="3.2 docker 镜像的存储管理"></a>3.2 docker 镜像的存储管理</h2><p>有了 UFS 的分层概念，我们就很好理解这样的一个简单 Dockerfile：</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> alpine</span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> foo /foo</span></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> bar /bar</span></span><br></pre></td></tr></table></figure>
+
+<p>在 build 时的输出所代表的含义了。<br /><img src="https://b3logfile.com/file/2022/06/solo-fetchupload-6701124898825516247-62e45ebd.jpeg" alt="640.jpg"><br />但是使用 docker pull 拉取的镜像文件，在本地机器上存储在哪，又是如何管理的？这里实际操作认证一下。在宿主机上确认当前 docker 所使用的存储驱动（默认是 overlay2）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker info --format <span class="string">&#x27;&#123;&#123;.Driver&#125;&#125;&#x27;</span></span></span><br></pre></td></tr></table></figure>
+
+<p>以及镜像下载后的存储路径（默认存储在 /var/lib/docker）：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker info --format <span class="string">&#x27;&#123;&#123;.DockerRootDir&#125;&#125;&#x27;</span></span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://b3logfile.com/file/2022/06/solo-fetchupload-17614840827613677612-a84ef112.png" alt="1654656955257.png"><br />关注 image 和 overlay2 目录。前者是存放镜像信息的地方，后者则是存放具体每一分层的文件内容。（这里的 165536.165536 是开启 userremap 之后的隔离目录，以后讲一下）我们先深入看一下 image 目录结构：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ tree -L 2 /var/lib/docker/image/</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://b3logfile.com/file/2022/06/solo-fetchupload-12377888107490950142-b25a6fcf.png" alt="image.png"><br />留心这个 imagedb 目录，接下来以 alpine 镜像为例子，看看 docker 是如何管理镜像的：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker pull alpine</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker image ls alpine</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://b3logfile.com/file/2022/06/solo-fetchupload-17804854460151312179-25c3b3d8.png" alt="image.png"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> tree -L 2 /var/lib/docker/image/overlay2/imagedb/content/ | grep c059</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://b3logfile.com/file/2022/06/solo-fetchupload-16821512220598905282-ae2e4b30.png" alt="image.png"><br />多了一个名为镜像 ID 的文件，是一个 json 格式的文件，这里包含了该镜像的参数信息：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> jq . /var/lib/docker/image/overlay2/imagedb/content/sha256/[id]</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://b3logfile.com/file/2022/06/solo-fetchupload-3219872537536606357-183b9670.png" alt="image.png"><br />看看讲一个镜像运行起来之后有什么变化，开启一个 alpine 容器：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker run --rm -d alpine sleep 600</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://b3logfile.com/file/2022/06/solo-fetchupload-14735661835711599890-5b60acff.png" alt="image.png"><br />找到它的 overlay2 挂载点（MergedDir）：(从宿主机上 mount 也能看到这条挂载点 信息)</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker inspect --format=<span class="string">&#x27;&#123;&#123;.GraphDriver.Data&#125;&#125;&#x27;</span> $(docker ps -ql) | grep Merged</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://b3logfile.com/file/2022/06/solo-fetchupload-11672385172917191791-5c1deb85.png" alt="image.png"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> mount | grep e68b</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://b3logfile.com/file/2022/06/solo-fetchupload-10128252885329280348-b59f14db.png" alt="image.png"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ls /var/lib/docker/overlay2/d4239d20eddd324f8facaa1b12973f2c30c4343f1c4b907d0639b7b198df2b5e/merged/</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://b3logfile.com/file/2022/06/solo-fetchupload-1138473452603451198-30866c26.png" alt="image.png"><br /><img src="https://b3logfile.com/file/2022/06/solo-fetchupload-16933189416052931160-57025052.png" alt="image.png"><br />可以验证一下容器所使用的这种分层存储的文件系统：</p>
+<ol>
+<li>查看当前容器实例与原始镜像相比，有哪些修改：</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 输出为空，还没有修改</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker diff $(docker ps -ql)</span></span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>在容器实例的 <code>/</code> 下创建一个 <code>test.txt</code> 文件：</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it $(docker ps -ql) /bin/sh -c <span class="string">&#x27;echo &quot;Hello Click&quot; &gt; test.txt&#x27;</span></span></span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>查看与原始镜像的修改：</li>
+</ol>
+<p><img src="https://b3logfile.com/file/2022/06/solo-fetchupload-13276013217623677958-efb5e392.png" alt="image.png"></p>
+<ol start="4">
+<li>查看容器对应 UFS 各层文件的变化：<ol>
+<li>查看容器在 Merged 层 MergedDir 目录的变化（新增了刚刚创建的 test.txt）：</li>
+</ol>
+</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ls /var/lib/docker/overlay2/e68b24c0414b8e8af8e782a3d8b2f49ed2c3cda295e423ad176bc3820d73536f/merged/</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://b3logfile.com/file/2022/06/solo-fetchupload-234116233964797327-e1d64868.png" alt="image.png"></p>
+<ol start="2">
+<li>查看容器在镜像层之上增加的可写层 UpperDir 目录的变化（有且仅有 test.txt）：</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ls /var/lib/docker/overlay2/e68b24c0414b8e8af8e782a3d8b2f49ed2c3cda295e423ad176bc3820d73536f/diff/</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://b3logfile.com/file/2022/06/solo-fetchupload-17066357415079316551-e644edeb.png" alt="image.png"></p>
+<ol start="3">
+<li>查看容器使用的镜像层 LowerDir 目录：<em>（这里回答了之前提出的 镜像的实际内容的存储位置 ）</em></li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 读出镜像层包含的 UFS 层</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat /var/lib/docker/overlay2/e68b24c0414b8e8af8e782a3d8b2f49ed2c3cda295e423ad176bc3820d73536f/lower</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://b3logfile.com/file/2022/06/solo-fetchupload-16801783490443095281-c25abc76.png" alt="image.png"><br />查看一下这些分层，可以看到仅包含 UFS 中低层的原始镜像文件，不包含新增的文件：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ls /var/lib/docker/overlay2/l/WPPXU6IXWFXRU5562K62QHJSII</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ls /var/lib/docker/overlay2/l/C7O7MVM4YRQGYTWKHJHTMKKCK3</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://b3logfile.com/file/2022/06/solo-fetchupload-4224894619566441865-91fc06fd.png" alt="image.png"></p>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>Author: </span>
+      <a href="https://click.500team.cn">click</a>
+    </p>
+    <p class="copyright-item">
+      <span>Link: </span>
+      <a href="https://click.500team.cn/2022/06/15/docker-%E5%BA%95%E5%B1%82%E6%8A%80%E6%9C%AF%E6%B5%85%E6%9E%90/">https://click.500team.cn/2022/06/15/docker-%E5%BA%95%E5%B1%82%E6%8A%80%E6%9C%AF%E6%B5%85%E6%9E%90/</a>
+    </p>
+    <p class="copyright-item">
+      <span>License: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/docker/">docker</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2022/06/19/Firecracker-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">Firecracker 环境配置</span>
+        <span class="prev-text nav-mobile">Prev</span>
+      </a>
+    <a class="next" href="/2022/04/02/%E5%AE%B9%E5%99%A8%E5%9F%BA%E7%A1%80%E8%AE%BE%E6%96%BD%E7%9A%84%E9%A3%8E%E9%99%A9%E5%88%86%E6%9E%90/">
+        <span class="next-text nav-default">容器基础设施的风险分析</span>
+        <span class="prev-text nav-mobile">Next</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"><div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:c1ick9917@gmail.com" class="iconfont icon-email" title="email"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    Powered by <a class="hexo-link" target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    Theme - 
+    <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2020 - 2023<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">click</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script src="https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js"></script>
+<script type="text/javascript">
+  var dsqjs = new DisqusJS({
+      shortname: '500team',
+      identifier: '2022/06/15/docker-底层技术浅析/',
+      url: 'https://click.500team.cn/2022/06/15/docker-%E5%BA%95%E5%B1%82%E6%8A%80%E6%9C%AF%E6%B5%85%E6%9E%90/',
+      title: 'docker 底层技术浅析',
+      api: 'https://disqus.skk.moe/disqus/',
+      apikey: 'ClrDj075UU1Z575IOeVGwbZgwt5k5XVEWj2wyvN8u0U81jg3ynJZF3FSBAMUmGRb',
+      admin: '500team',
+      adminLabel: ''
+  });
+</script><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script>
+</body>
+</html>
