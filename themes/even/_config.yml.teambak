@@ -3,7 +3,7 @@
 # ===========================================
 
 # Site creation time
-since: 2020
+since: 2021
 
 # Custom your favicon.ico in `site/source`
 favicon: /favicon.ico
@@ -55,13 +55,13 @@ reward:
 # Social links Settings
 # ===========================================
 social:
-  email: c1ick9917@gmail.com
+  email: your@email.com
   stack-overflow:
   twitter:
   facebook:
   linkedin:
   google:
-  github:
+  github: https://github.com/500-Team
   weibo:
   zhihu:
   douban:
