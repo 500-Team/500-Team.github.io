@@ -6,7 +6,7 @@
   <link href="https://click.500team.cn/atom.xml" rel="self"/>
   
   <link href="https://click.500team.cn/"/>
-  <updated>2023-02-28T17:05:16.620Z</updated>
+  <updated>2023-03-04T09:20:54.283Z</updated>
   <id>https://click.500team.cn/</id>
   
   <author>
@@ -15,6 +15,24 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>CDK 源码阅读笔记（evaluate 部分）</title>
+    <link href="https://click.500team.cn/2022/11/30/cdk-evaluate/"/>
+    <id>https://click.500team.cn/2022/11/30/cdk-evaluate/</id>
+    <published>2022-11-30T09:11:25.000Z</published>
+    <updated>2023-03-04T09:20:54.283Z</updated>
+    
+    
+      
+      
+    <summary type="html">&lt;h2 id=&quot;CDK-功能概述&quot;&gt;&lt;a href=&quot;#CDK-功能概述&quot; class=&quot;headerlink&quot; title=&quot;CDK 功能概述&quot;&gt;&lt;/a&gt;CDK 功能概述&lt;/h2&gt;&lt;p&gt;CDK（Container Duck）是一个为容器环境定制的渗透测试工具，在可控容器内提供，</summary>
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>CVE-2019-14271 分析复现</title>
@@ -41,7 +59,7 @@
     <link href="https://click.500team.cn/2022/11/04/CVE-2018-15664/"/>
     <id>https://click.500team.cn/2022/11/04/CVE-2018-15664/</id>
     <published>2022-11-04T07:31:23.000Z</published>
-    <updated>2023-03-01T16:45:38.426Z</updated>
+    <updated>2023-03-02T06:05:28.922Z</updated>
     
     
       
@@ -156,6 +174,25 @@
     
     
     <category term="笔记" scheme="https://click.500team.cn/tags/%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>proc magic link 处理逻辑分析</title>
+    <link href="https://click.500team.cn/2022/03/04/proc-magic-link/"/>
+    <id>https://click.500team.cn/2022/03/04/proc-magic-link/</id>
+    <published>2022-03-04T10:13:16.000Z</published>
+    <updated>2023-03-04T10:15:07.440Z</updated>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;&lt;em&gt;/proc/self/exe 为例，内核版本 4.14.151&lt;/em&gt;&lt;/p&gt;
+&lt;h2 id=&quot;内核中的处理流程&quot;&gt;&lt;a href=&quot;#内核中的处理流程&quot; class=&quot;headerlink&quot; title=&quot;内核中的处理流程&quot;&gt;&lt;/a&gt;内核中的处理流程&lt;/h2&gt;&lt;</summary>
+      
+    
+    
+    
     
   </entry>
   
