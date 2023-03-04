@@ -5,6 +5,7 @@ tags: TODO
 author: click
 ---
 ## 题目
+*这个题目是 CVE-2019-5736 的同类思路，漏洞也是收到这道题目启发发现的*
 
 题目链接：[https://github.com/LevitatingLion/ctf-writeups/tree/master/35c3ctf/pwn_namespaces](https://github.com/LevitatingLion/ctf-writeups/tree/master/35c3ctf/pwn_namespaces)
 题目给出一个 Dockerfile 和一个 namespaces 二进制执行文件
